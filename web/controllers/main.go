@@ -1,5 +1,7 @@
 package controllers
 
-func Main() string {
-	return "hello world"
+import "gopkg.in/macaron.v1"
+
+func Main(ctx *macaron.Context) {
+	ctx.HTML(200, "layout")
 }

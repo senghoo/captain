@@ -19,16 +19,17 @@ func NewServer() *Server {
 
 func (s *Server) Run() {
 	s.initRoute()
+	s.initMiddleWare()
 	s.m.SetAutoHead(true)
 	s.m.Run()
 }
 
 func (s *Server) initMiddleWare() {
 	s.m.Use(macaron.Logger())
+	s.m.Use(pongo2.Pongoer())
 	s.m.Use(macaron.Recovery())
 	s.m.Use(macaron.Static("public"))
 	s.m.Use(macaron.Static("assets"))
 	s.m.Use(cache.Cacher())
 	s.m.Use(session.Sessioner())
-	s.m.Use(pongo2.Pongoer())
 }
