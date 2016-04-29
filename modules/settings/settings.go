@@ -32,8 +32,16 @@ func Save() {
 	ioutil.WriteFile("config.yml", d, 0644)
 }
 
-func Get(path string) (string, error) {
+func Get(path, defaults string) (string, error) {
 	return cfg.String(path)
+}
+
+func GetOrDefault(path, d string) string {
+	v, err := cfg.String(path)
+	if err != nil {
+		return d
+	}
+	return v
 }
 
 func Set(path, val string) error {
