@@ -5,6 +5,7 @@ import (
 	"runtime"
 
 	"github.com/codegangsta/cli"
+	"github.com/gogits/gogs/models"
 	"github.com/senghoo/captain/cmd"
 )
 
@@ -15,6 +16,10 @@ func init() {
 }
 
 func main() {
+	// init orm
+	models.NewEngine()
+
+	// start app
 	app := cli.NewApp()
 	app.Name = "Captain"
 	app.Usage = "A Docker Manage Service"
