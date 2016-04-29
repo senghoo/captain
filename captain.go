@@ -1,12 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"runtime"
 
 	"github.com/codegangsta/cli"
-	"github.com/gogits/gogs/models"
 	"github.com/senghoo/captain/cmd"
+	"github.com/senghoo/captain/models"
 )
 
 const APP_VER = "0.0.1"
@@ -17,7 +18,10 @@ func init() {
 
 func main() {
 	// init orm
-	models.NewEngine()
+	if err := models.NewEngine(); err != nil {
+		fmt.Print(err)
+		return
+	}
 
 	// start app
 	app := cli.NewApp()

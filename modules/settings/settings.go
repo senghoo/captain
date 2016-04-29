@@ -23,6 +23,7 @@ func init() {
 	if err != nil {
 		fmt.Print("config parse error or not exists, use default")
 		cfg, _ = config.ParseYaml(defaultSetting)
+		Save()
 	}
 }
 
@@ -38,7 +39,7 @@ func Get(path, defaults string) (string, error) {
 
 func GetOrDefault(path, d string) string {
 	v, err := cfg.String(path)
-	if err != nil {
+	if err != nil || v == "" {
 		return d
 	}
 	return v

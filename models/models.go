@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
 	"github.com/senghoo/captain/modules/settings"
@@ -18,8 +19,13 @@ var (
 	}
 )
 
+func init() {
+	tables = append(tables, new(User))
+	LoadSetting()
+}
+
 func LoadSetting() {
-	DBCfg.Host = settings.GetOrDefault("db.host", "localhost")
+	DBCfg.Host = settings.GetOrDefault("db.host", "localhost:3306")
 	DBCfg.Name = settings.GetOrDefault("db.name", "captain")
 	DBCfg.User = settings.GetOrDefault("db.user", "root")
 	DBCfg.Passwd = settings.GetOrDefault("db.password", "")
