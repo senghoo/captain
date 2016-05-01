@@ -1,6 +1,13 @@
 package models
 
-import "time"
+import (
+	"crypto/sha256"
+	"fmt"
+	"strings"
+	"time"
+
+	"github.com/senghoo/captain/modules/utils"
+)
 
 type User struct {
 	ID        int64
@@ -9,9 +16,61 @@ type User struct {
 	FullName  string
 	Email     string    `xorm:"NOT NULL"`
 	Passwd    string    `xorm:"NOT NULL"`
+	Salt      string    `xorm:"NOT NULL"`
 	Created   time.Time `xorm:"CREATED"`
 	Updated   time.Time `xorm:"UPDATED"`
 
 	IsActive bool
 	IsAdmin  bool
+}
+
+func (u *User) ValidatePassword(passwd string) bool {
+	return u.Passwd == encodePassword(passwd, u.Salt)
+}
+
+func (u *User) SetPassword(passwd string) {
+	u.Passwd = encodePassword(passwd, u.Salt)
+}
+
+func (u *User) SetSalt() {
+	u.Salt = utils.RandomString(10)
+}
+
+func encodePassword(pass, salt string) string {
+	return fmt.Sprintf("%x", utils.PBKDF2([]byte(pass), []byte(salt), 10000, 50, sha256.New))
+}
+
+func UserSignIn(username, password string) (*User, error) {
+	var u *User
+	if strings.Contains(username, "@") {
+		u = &User{Email: strings.ToLower(username)}
+	} else {
+		u = &User{LowerName: strings.ToLower(username)}
+	}
+
+	userExists, err := x.Get(u)
+	if err != nil {
+		return nil, err
+	}
+
+	if userExists {
+		if u.ValidatePassword(password) {
+			return u, nil
+		}
+	}
+	return nil, ErrUserNotExist{u.ID, u.Name}
+}
+
+type ErrUserNotExist struct {
+	UID  int64
+	Name string
+}
+
+func IsErrUserNotExist(err error) bool {
+	_, ok := err.(ErrUserNotExist)
+	return ok
+}
+
+func (err ErrUserNotExist) Error() string {
+	return fmt.Sprintf("user does not exist [uid: %d, name: %s]", err.UID, err.Name)
 }

@@ -1,0 +1,6 @@
+db:
+  host: null
+  name: null
+  password: null
+  port: null
+  user: null
