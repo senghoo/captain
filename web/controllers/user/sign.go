@@ -17,7 +17,7 @@ func SignInPost(ctx *middleware.Context, form SignInForm) {
 		return
 	}
 
-	ctx.Session.Set("uid", u.ID)
+	ctx.SetUser(u)
 	ctx.Redirect("/", 302)
 }
 
