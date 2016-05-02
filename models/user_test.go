@@ -6,8 +6,7 @@ import (
 )
 
 func TestValidatePassword(t *testing.T) {
-	u := new(User)
-	u.SetSalt()
+	u := NewUser("")
 	u.SetPassword("abcde")
 	if !u.ValidatePassword("abcde") {
 		fmt.Printf("%#v\n", u)

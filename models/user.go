@@ -24,15 +24,27 @@ type User struct {
 	IsAdmin  bool
 }
 
+func NewUser(name string) *User {
+	u := &User{
+		LowerName: strings.ToLower(name),
+		Name:      name,
+	}
+	u.UpdateSalt()
+	return u
+}
+
 func (u *User) ValidatePassword(passwd string) bool {
 	return u.Passwd == encodePassword(passwd, u.Salt)
 }
 
 func (u *User) SetPassword(passwd string) {
+	if u.Salt == "" {
+		u.UpdateSalt()
+	}
 	u.Passwd = encodePassword(passwd, u.Salt)
 }
 
-func (u *User) SetSalt() {
+func (u *User) UpdateSalt() {
 	u.Salt = utils.RandomString(10)
 }
 
