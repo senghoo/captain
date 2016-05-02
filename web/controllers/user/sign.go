@@ -18,7 +18,7 @@ func SignInPost(ctx *middleware.Context, form SignInForm) {
 	}
 
 	ctx.Session.Set("uid", u.ID)
-	ctx.HTML(200, "/")
+	ctx.Redirect("/", 302)
 }
 
 type SignInForm struct {

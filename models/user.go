@@ -71,6 +71,14 @@ func (u *User) UpdateSalt() {
 	u.Salt = utils.RandomString(10)
 }
 
+func (u *User) Save() {
+	if u.ID == 0 {
+		x.Insert(u)
+	} else {
+		x.Id(u.ID).Update(u)
+	}
+}
+
 func encodePassword(pass, salt string) string {
 	return fmt.Sprintf("%x", utils.PBKDF2([]byte(pass), []byte(salt), 10000, 50, sha256.New))
 }

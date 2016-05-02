@@ -22,6 +22,7 @@ type Context struct {
 func Contexter() macaron.Handler {
 	return func(c *macaron.Context, cache cache.Cache, sess session.Store, f *session.Flash, x csrf.CSRF) {
 		ctx := &Context{
+			Context: c,
 			Cache:   cache,
 			csrf:    x,
 			Flash:   f,
