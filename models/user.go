@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-macaron/session"
 	"github.com/senghoo/captain/modules/utils"
 )
 
@@ -31,6 +32,28 @@ func NewUser(name string) *User {
 	}
 	u.UpdateSalt()
 	return u
+}
+
+func GetUserByID(id int64) *User {
+	u := &User{
+		ID: id,
+	}
+	if existed, err := x.Get(u); err != nil && existed {
+		return u
+	}
+	return nil
+}
+
+func GetUserFromSession(sess session.Store) *User {
+	uid := sess.Get("uid")
+	if uid == nil {
+		return nil
+	}
+
+	if id, ok := uid.(int64); ok {
+		return GetUserByID(id)
+	}
+	return nil
 }
 
 func (u *User) ValidatePassword(passwd string) bool {

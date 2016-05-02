@@ -1,13 +1,24 @@
 package user
 
-import "gopkg.in/macaron.v1"
+import (
+	"github.com/senghoo/captain/models"
+	"github.com/senghoo/captain/web/middleware"
+	"gopkg.in/macaron.v1"
+)
 
 func SignIn(ctx *macaron.Context) {
 	ctx.HTML(200, "user/sign_in")
 }
 
-func SignInPost(ctx *macaron.Context, form SignInForm) {
-	ctx.HTML(200, "user/sign_in")
+func SignInPost(ctx *middleware.Context, form SignInForm) {
+	u, err := models.UserSignIn(form.UserName, form.Password)
+	if err != nil {
+		ctx.HTML(200, "user/sign_in")
+		return
+	}
+
+	ctx.Session.Set("uid", u.ID)
+	ctx.HTML(200, "/")
 }
 
 type SignInForm struct {
