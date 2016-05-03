@@ -3,17 +3,24 @@ package user
 import (
 	"github.com/senghoo/captain/models"
 	"github.com/senghoo/captain/web/middleware"
-	"gopkg.in/macaron.v1"
 )
 
-func SignIn(ctx *macaron.Context) {
+func SignIn(ctx *middleware.Context) {
 	ctx.HTML(200, "user/sign_in")
 }
 
 func SignInPost(ctx *middleware.Context, form SignInForm) {
+	if ctx.HasError() {
+		ctx.Redirect("/user/sign_in", 302)
+		return
+	}
+
 	u, err := models.UserSignIn(form.UserName, form.Password)
 	if err != nil {
-		ctx.HTML(200, "user/sign_in")
+		if models.IsErrUserNotExist(err) {
+			ctx.Flash.Error("User and password unmached")
+		}
+		ctx.Redirect("/user/sign_in", 302)
 		return
 	}
 

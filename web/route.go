@@ -16,6 +16,6 @@ func (s *Server) initRoute() {
 	s.m.Get("/", reqSignIn, controllers.Main)
 	s.m.Group("/user", func() {
 		s.m.Get("/sign_in", reqSignOut, user.SignIn)
-		s.m.Post("/sign_in", reqSignOut, binding.Bind(user.SignInForm{}), user.SignInPost)
+		s.m.Post("/sign_in", reqSignOut, binding.BindIgnErr(user.SignInForm{}), user.SignInPost)
 	})
 }

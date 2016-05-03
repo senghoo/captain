@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"fmt"
-
 	"github.com/go-macaron/cache"
 	"github.com/go-macaron/csrf"
 	"github.com/go-macaron/session"
@@ -28,7 +26,6 @@ func (c *Context) SetUser(u *models.User) {
 
 func (c *Context) GetUser() *models.User {
 	uid := c.Session.Get("uid")
-	fmt.Printf("uid: %#v\n", uid)
 	if uid == nil {
 		return nil
 	}
@@ -37,6 +34,17 @@ func (c *Context) GetUser() *models.User {
 		return models.GetUserByID(id)
 	}
 	return nil
+}
+
+// HasError returns true if error occurs in form validation.
+func (ctx *Context) HasError() bool {
+	hasErr, ok := ctx.Data["HasError"]
+	if !ok {
+		return false
+	}
+	ctx.Flash.ErrorMsg = ctx.Data["ErrorMsg"].(string)
+	ctx.Data["Flash"] = ctx.Flash
+	return hasErr.(bool)
 }
 
 func Contexter() macaron.Handler {
@@ -49,7 +57,6 @@ func Contexter() macaron.Handler {
 			Session: sess,
 		}
 		user := ctx.GetUser()
-		fmt.Printf("u: %#v\n", user)
 		if user != nil {
 			ctx.User = user
 			ctx.IsSigned = true
