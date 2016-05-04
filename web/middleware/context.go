@@ -36,6 +36,12 @@ func (c *Context) GetUser() *models.User {
 	return nil
 }
 
+func (c *Context) Logout() {
+	c.User = nil
+	c.IsSigned = false
+	c.Session.Delete("uid")
+}
+
 // HasError returns true if error occurs in form validation.
 func (ctx *Context) HasError() bool {
 	hasErr, ok := ctx.Data["HasError"]

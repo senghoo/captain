@@ -33,3 +33,8 @@ type SignInForm struct {
 	Password string `binding:"Required;MaxSize(254)"`
 	Remember bool
 }
+
+func SignOut(ctx *middleware.Context) {
+	ctx.Logout()
+	ctx.Redirect("/", 302)
+}
