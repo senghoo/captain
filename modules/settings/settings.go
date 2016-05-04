@@ -3,6 +3,7 @@ package settings
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"github.com/olebedev/config"
 )
@@ -33,7 +34,7 @@ func Save() {
 	ioutil.WriteFile("config.yml", d, 0644)
 }
 
-func Get(path, defaults string) (string, error) {
+func Get(path string) (string, error) {
 	return cfg.String(path)
 }
 
@@ -47,4 +48,12 @@ func GetOrDefault(path, d string) string {
 
 func Set(path, val string) error {
 	return cfg.Set(path, val)
+}
+
+func GetStaticPath() string {
+	staticPath, _ := Get("application.dir")
+	if staticPath == "" {
+		staticPath, _ = os.Getwd()
+	}
+	return staticPath
 }

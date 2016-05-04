@@ -1,6 +1,8 @@
 package web
 
 import (
+	"path"
+
 	"github.com/go-macaron/cache"
 	"github.com/go-macaron/csrf"
 	"github.com/go-macaron/pongo2"
@@ -29,10 +31,12 @@ func (s *Server) Run() {
 
 func (s *Server) initMiddleWare() {
 	s.m.Use(macaron.Logger())
-	s.m.Use(pongo2.Pongoer())
+	s.m.Use(pongo2.Pongoer(pongo2.Options{
+		Directory: path.Join(settings.GetStaticPath(), "templates"),
+	}))
 	s.m.Use(macaron.Recovery())
-	s.m.Use(macaron.Static("public"))
-	s.m.Use(macaron.Static("assets"))
+	s.m.Use(macaron.Static(path.Join(settings.GetStaticPath(), "public")))
+	s.m.Use(macaron.Static(path.Join(settings.GetStaticPath(), "assets")))
 	s.m.Use(cache.Cacher())
 	s.m.Use(session.Sessioner())
 	s.m.Use(csrf.Csrfer(csrf.Options{
