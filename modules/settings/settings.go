@@ -16,11 +16,13 @@ db:
   password:
   host:
   port:
+app:
+  static:
 `
 
 func init() {
 	var err error
-	cfg, err = config.ParseYamlFile("config.yml")
+	cfg, err = config.ParseYamlFile(configFile())
 	if err != nil {
 		fmt.Print("config parse error or not exists, use default")
 		cfg, _ = config.ParseYaml(defaultSetting)
@@ -28,10 +30,17 @@ func init() {
 	}
 }
 
+func configFile() (config string) {
+	config = os.Getenv("CAPTAIN_CONFIG")
+	if config == "" {
+		config = "config.yml"
+	}
+}
+
 func Save() {
 	yml, _ := config.RenderYaml(cfg.Root)
 	d := []byte(yml)
-	ioutil.WriteFile("config.yml", d, 0644)
+	ioutil.WriteFile(configFile(), d, 0644)
 }
 
 func Get(path string) (string, error) {
@@ -50,10 +59,15 @@ func Set(path, val string) error {
 	return cfg.Set(path, val)
 }
 
-func GetStaticPath() string {
-	staticPath, _ := Get("application.dir")
-	if staticPath == "" {
-		staticPath, _ = os.Getwd()
+func GetStaticPath() (path string) {
+	path = os.Getenv("CAPTAIN_STATIC")
+	if path != "" {
+		return
 	}
-	return staticPath
+
+	path, _ = Get("app.static")
+	if path != "" {
+		return
+	}
+	path, _ = os.Getwd()
 }
