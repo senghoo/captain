@@ -17,6 +17,9 @@ db:
   host:
 app:
   static:
+github:
+  client_id:
+  client_secret:
 `
 
 func init() {

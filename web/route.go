@@ -3,6 +3,7 @@ package web
 import (
 	"github.com/go-macaron/binding"
 	"github.com/senghoo/captain/web/controllers"
+	"github.com/senghoo/captain/web/controllers/github"
 	"github.com/senghoo/captain/web/controllers/user"
 	"github.com/senghoo/captain/web/middleware"
 )
@@ -19,4 +20,7 @@ func (s *Server) initRoute() {
 		s.m.Post("/sign_in", reqSignOut, binding.BindIgnErr(user.SignInForm{}), user.SignInPost)
 		s.m.Get("/sign_out", user.SignOut)
 	})
+	s.m.Group("/github", func() {
+		s.m.Get("/auth", github.Auth)
+	}, reqSignIn)
 }
