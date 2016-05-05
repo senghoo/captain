@@ -15,7 +15,6 @@ db:
   user:
   password:
   host:
-  port:
 app:
   static:
 `
@@ -35,6 +34,7 @@ func configFile() (config string) {
 	if config == "" {
 		config = "config.yml"
 	}
+	return
 }
 
 func Save() {
@@ -70,4 +70,5 @@ func GetStaticPath() (path string) {
 		return
 	}
 	path, _ = os.Getwd()
+	return
 }

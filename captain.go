@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"time"
 
 	"github.com/codegangsta/cli"
 	"github.com/senghoo/captain/cmd"
@@ -11,6 +12,7 @@ import (
 )
 
 const APP_VER = "0.0.1"
+const ENGINE_MAX_RETRY = 3
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
@@ -18,9 +20,13 @@ func init() {
 
 func main() {
 	// init orm
-	if err := models.NewEngine(); err != nil {
-		fmt.Print(err)
-		return
+	for i := 0; i < ENGINE_MAX_RETRY; i++ {
+		if err := models.NewEngine(); err != nil {
+			fmt.Print(err)
+			time.Sleep(5 * time.Second)
+		} else {
+			break
+		}
 	}
 
 	// start app
