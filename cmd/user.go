@@ -17,15 +17,17 @@ var UserAdd = cli.Command{
 	},
 }
 
-func addUser(ctx *cli.Context) {
+func addUser(ctx *cli.Context) (err error) {
 	username := ctx.Args()[0]
 	password := ctx.Args()[1]
 
 	if username == "" || password == "" {
 		fmt.Println("username and password required")
+		return
 	}
 
 	u := models.NewUser(username)
 	u.SetPassword(password)
 	u.Save()
+	return
 }
