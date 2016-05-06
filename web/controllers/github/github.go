@@ -20,11 +20,11 @@ func Callback(ctx *middleware.Context) {
 		return
 	}
 
-	if state != ctx.Params("state") {
+	if state != ctx.Query("state") {
 		ctx.Redirect("/")
 	}
 
-	code := ctx.Params("code")
+	code := ctx.Query("code")
 	token, err := gh.Exchange(code)
 	if err != nil {
 		ctx.Redirect("/")
