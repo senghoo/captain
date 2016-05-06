@@ -22,5 +22,6 @@ func (s *Server) initRoute() {
 	})
 	s.m.Group("/github", func() {
 		s.m.Get("/auth", github.Auth)
+		s.m.Get("/callback", github.Callback)
 	}, reqSignIn)
 }
