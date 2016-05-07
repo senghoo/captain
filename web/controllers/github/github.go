@@ -14,7 +14,6 @@ func Auth(ctx *middleware.Context) {
 
 func Callback(ctx *middleware.Context) {
 	state, ok := ctx.Session.Get("github_state").(string)
-	ctx.Session.Delete("github_state")
 	if !ok {
 		ctx.Redirect("/")
 		return
@@ -22,14 +21,18 @@ func Callback(ctx *middleware.Context) {
 
 	if state != ctx.Query("state") {
 		ctx.Redirect("/")
+		return
 	}
 
 	code := ctx.Query("code")
 	token, err := gh.Exchange(code)
 	if err != nil {
 		ctx.Redirect("/")
+		return
 	}
 
 	a := models.NewGithubAccount(ctx.User.ID, token)
 	a.Save()
+	ctx.Session.Delete("github_state")
+	ctx.Redirect("/")
 }

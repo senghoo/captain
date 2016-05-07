@@ -19,6 +19,7 @@ type User struct {
 	Salt      string    `xorm:"NOT NULL"`
 	Created   time.Time `xorm:"CREATED"`
 	Updated   time.Time `xorm:"UPDATED"`
+	Deleted   time.Time `xorm:"deleted"`
 
 	IsActive bool
 	IsAdmin  bool

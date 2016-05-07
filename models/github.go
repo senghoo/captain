@@ -9,11 +9,12 @@ import (
 
 type GithubAccount struct {
 	ID          int64
-	OwnerID     int64
-	Name        string
+	OwnerID     int64  `xorm:"not null unique(owner_name)"`
+	Name        string `xorm:"not null unique(owner_name)"`
 	AccessToken string
 	Created     time.Time  `xorm:"CREATED"`
 	Updated     time.Time  `xorm:"UPDATED"`
+	Deleted     time.Time  `xorm:"deleted"`
 	client      *gc.Client `xorm:"-"`
 }
 
@@ -43,11 +44,22 @@ func (a *GithubAccount) UpdateName() {
 	if err != nil {
 		return
 	}
-	a.Name = *user.Name
+	a.Name = *user.Login
 }
 
 func (a *GithubAccount) Save() {
 	if a.ID == 0 {
+		// find same user
+		cond := &GithubAccount{
+			OwnerID: a.OwnerID,
+			Name:    a.Name,
+		}
+		has, _ := x.Get(cond)
+		if has {
+			// got it
+			x.Id(cond.ID).Update(a)
+			return
+		}
 		x.Insert(a)
 	} else {
 		x.Id(a.ID).Update(a)
