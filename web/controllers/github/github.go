@@ -6,6 +6,8 @@ import (
 	"github.com/senghoo/captain/web/middleware"
 )
 
+const accountPerPage = 30
+
 func Auth(ctx *middleware.Context) {
 	url, state := gh.AuthCodeURL()
 	ctx.Session.Set("github_state", state)
@@ -31,8 +33,18 @@ func Callback(ctx *middleware.Context) {
 		return
 	}
 
-	a := models.NewGithubAccount(ctx.User.ID, token)
+	a := models.NewGithubAccount(token)
 	a.Save()
 	ctx.Session.Delete("github_state")
 	ctx.Redirect("/")
+}
+
+func List(ctx *middleware.Context) {
+	accounts, err := models.GithubAccounts()
+	if err != nil {
+		return
+	}
+	ctx.Data["GithubAccounts"] = accounts
+
+	ctx.HTML(200, "github/list")
 }

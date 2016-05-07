@@ -21,6 +21,7 @@ func (s *Server) initRoute() {
 		s.m.Get("/sign_out", user.SignOut)
 	})
 	s.m.Group("/github", func() {
+		s.m.Get("/", github.List)
 		s.m.Get("/auth", github.Auth)
 		s.m.Get("/callback", github.Callback)
 	}, reqSignIn)

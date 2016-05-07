@@ -17,7 +17,7 @@ type GithubAccount struct {
 	client      *gc.Client `xorm:"-"`
 }
 
-func NewGithubAccount(oid int64, token string) (a *GithubAccount) {
+func NewGithubAccount(token string) (a *GithubAccount) {
 	a = &GithubAccount{
 		AccessToken: token,
 	}
@@ -61,4 +61,14 @@ func (a *GithubAccount) Save() {
 	} else {
 		x.Id(a.ID).Update(a)
 	}
+}
+
+func GithubAccounts() ([]*GithubAccount, error) {
+	var accounts []*GithubAccount
+	return accounts, x.Asc("id").Find(&accounts)
+}
+
+func CountGithubAccounts() int64 {
+	count, _ := x.Count(new(GithubAccount))
+	return count
 }
