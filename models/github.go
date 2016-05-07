@@ -9,8 +9,7 @@ import (
 
 type GithubAccount struct {
 	ID          int64
-	OwnerID     int64  `xorm:"not null unique(owner_name)"`
-	Name        string `xorm:"not null unique(owner_name)"`
+	Name        string `xorm:"not null unique"`
 	AccessToken string
 	Created     time.Time  `xorm:"CREATED"`
 	Updated     time.Time  `xorm:"UPDATED"`
@@ -20,7 +19,6 @@ type GithubAccount struct {
 
 func NewGithubAccount(oid int64, token string) (a *GithubAccount) {
 	a = &GithubAccount{
-		OwnerID:     oid,
 		AccessToken: token,
 	}
 	a.UpdateName()
@@ -51,8 +49,7 @@ func (a *GithubAccount) Save() {
 	if a.ID == 0 {
 		// find same user
 		cond := &GithubAccount{
-			OwnerID: a.OwnerID,
-			Name:    a.Name,
+			Name: a.Name,
 		}
 		has, _ := x.Get(cond)
 		if has {
