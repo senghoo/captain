@@ -3,6 +3,7 @@ package web
 import (
 	"github.com/go-macaron/binding"
 	"github.com/senghoo/captain/web/controllers"
+	"github.com/senghoo/captain/web/controllers/docker"
 	"github.com/senghoo/captain/web/controllers/github"
 	"github.com/senghoo/captain/web/controllers/user"
 	"github.com/senghoo/captain/web/middleware"
@@ -24,5 +25,9 @@ func (s *Server) initRoute() {
 		s.m.Get("/", github.List)
 		s.m.Get("/auth", github.Auth)
 		s.m.Get("/callback", github.Callback)
+	}, reqSignIn)
+
+	s.m.Group("/docker", func() {
+		s.m.Get("/", docker.Index)
 	}, reqSignIn)
 }
