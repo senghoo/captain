@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/oauth2"
 
-	gc "github.com/google/go-github/github"
+	"github.com/google/go-github/github"
 	"github.com/senghoo/captain/modules/settings"
 	"github.com/senghoo/captain/modules/utils"
 	githuboauth "golang.org/x/oauth2/github"
@@ -42,21 +42,21 @@ func GithubTokenExchange(code string) (token string, err error) {
 	return
 }
 
-func GithubClient(token string) *gc.Client {
+func GithubClient(token string) *github.Client {
 	t := new(oauth2.Token)
 	json.Unmarshal([]byte(token), t)
 	oauthClient := oauthConf.Client(oauth2.NoContext, t)
-	return gc.NewClient(oauthClient)
+	return github.NewClient(oauthClient)
 }
 
 type GithubAccount struct {
 	ID          int64
 	Name        string `xorm:"not null unique"`
 	AccessToken string
-	Created     time.Time  `xorm:"CREATED"`
-	Updated     time.Time  `xorm:"UPDATED"`
-	Deleted     time.Time  `xorm:"deleted"`
-	client      *gc.Client `xorm:"-"`
+	Created     time.Time      `xorm:"CREATED"`
+	Updated     time.Time      `xorm:"UPDATED"`
+	Deleted     time.Time      `xorm:"deleted"`
+	client      *github.Client `xorm:"-"`
 }
 
 func NewGithubAccount(token string) (a *GithubAccount) {
@@ -67,14 +67,14 @@ func NewGithubAccount(token string) (a *GithubAccount) {
 	return
 }
 
-func (a *GithubAccount) Client() *gc.Client {
+func (a *GithubAccount) Client() *github.Client {
 	if a.client == nil {
 		a.client = GithubClient(a.AccessToken)
 	}
 	return a.client
 }
 
-func (a *GithubAccount) GithubUser() (user *gc.User, err error) {
+func (a *GithubAccount) GithubUser() (user *github.User, err error) {
 	user, _, err = a.Client().Users.Get("")
 	return
 }
