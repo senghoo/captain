@@ -1,11 +1,53 @@
 package models
 
 import (
+	"encoding/json"
 	"time"
 
+	"golang.org/x/oauth2"
+
 	gc "github.com/google/go-github/github"
-	"github.com/senghoo/captain/modules/github"
+	"github.com/senghoo/captain/modules/settings"
+	"github.com/senghoo/captain/modules/utils"
+	githuboauth "golang.org/x/oauth2/github"
 )
+
+var oauthConf *oauth2.Config
+
+func init() {
+	oauthConf = &oauth2.Config{
+		ClientID:     settings.GetOrDefault("github.client_id", ""),
+		ClientSecret: settings.GetOrDefault("github.client_secret", ""),
+		Scopes:       []string{"user:email"},
+		Endpoint:     githuboauth.Endpoint,
+	}
+}
+
+func GithubAuthCodeURL() (url, state string) {
+	state = utils.RandomString(10)
+	url = oauthConf.AuthCodeURL(state, oauth2.AccessTypeOnline)
+	return
+}
+
+func GithubTokenExchange(code string) (token string, err error) {
+	t, err := oauthConf.Exchange(oauth2.NoContext, code)
+	if err != nil {
+		return
+	}
+	jsonBytes, err := json.Marshal(t)
+	if err != nil {
+		return
+	}
+	token = string(jsonBytes)
+	return
+}
+
+func GithubClient(token string) *gc.Client {
+	t := new(oauth2.Token)
+	json.Unmarshal([]byte(token), t)
+	oauthClient := oauthConf.Client(oauth2.NoContext, t)
+	return gc.NewClient(oauthClient)
+}
 
 type GithubAccount struct {
 	ID          int64
@@ -27,7 +69,7 @@ func NewGithubAccount(token string) (a *GithubAccount) {
 
 func (a *GithubAccount) Client() *gc.Client {
 	if a.client == nil {
-		a.client = github.GithubClient(a.AccessToken)
+		a.client = GithubClient(a.AccessToken)
 	}
 	return a.client
 }
