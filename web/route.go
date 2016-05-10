@@ -30,5 +30,6 @@ func (s *Server) initRoute() {
 	s.m.Group("/docker", func() {
 		s.m.Get("/", docker.Index)
 		s.m.Get("/new", docker.New)
+		s.m.Post("/new", binding.BindIgnErr(docker.NewForm{}), docker.NewPost)
 	}, reqSignIn)
 }
