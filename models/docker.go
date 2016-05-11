@@ -18,6 +18,11 @@ func NewDockerServer(name, endpoint string) *DockerServer {
 	}
 }
 
+func DockerServers() ([]*DockerServer, error) {
+	var servers []*DockerServer
+	return servers, x.Asc("id").Find(&servers)
+}
+
 func (d *DockerServer) Save() {
 	if d.ID == 0 {
 		// find same user

@@ -7,6 +7,12 @@ import (
 )
 
 func Index(ctx *middleware.Context) {
+	servers, err := models.DockerServers()
+	if err != nil {
+		return
+	}
+
+	ctx.Data["Servers"] = servers
 	ctx.HTML(200, "docker/index")
 }
 

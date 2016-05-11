@@ -19,6 +19,27 @@
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Endpoint</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for server in Servers %}
+                            <tr>
+                                <td>{{ server.ID }}</td>
+                                <td>{{ server.Name }}</td>
+                                <td>{{ server.Endpoint }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
             </div>
             <!-- /.panel-body -->
         </div>
