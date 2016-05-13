@@ -26,6 +26,7 @@
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Endpoint</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,6 +35,7 @@
                                 <td>{{ server.ID }}</td>
                                 <td>{{ server.Name }}</td>
                                 <td>{{ server.Endpoint }}</td>
+                                <td><a href="/docker/{{ server.ID }}">info</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

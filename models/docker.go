@@ -1,14 +1,31 @@
 package models
 
-import "time"
+import (
+	"fmt"
+	"time"
+
+	"github.com/fsouza/go-dockerclient"
+)
 
 type DockerServer struct {
 	ID       int64
 	Name     string `xorm:"not null unique"`
 	Endpoint string
-	Created  time.Time `xorm:"CREATED"`
-	Updated  time.Time `xorm:"UPDATED"`
-	Deleted  time.Time `xorm:"deleted"`
+	Created  time.Time      `xorm:"CREATED"`
+	Updated  time.Time      `xorm:"UPDATED"`
+	Deleted  time.Time      `xorm:"deleted"`
+	_client  *docker.Client `xorm:"-"`
+}
+
+func GetDockerServerByID(id int64) (*DockerServer, error) {
+	s := new(DockerServer)
+	has, err := x.Id(id).Get(s)
+	if err != nil {
+		return nil, err
+	} else if !has {
+		return nil, fmt.Errorf("Docker server id: %d not exist", id)
+	}
+	return s, nil
 }
 
 func NewDockerServer(name, endpoint string) *DockerServer {
@@ -39,4 +56,29 @@ func (d *DockerServer) Save() {
 	} else {
 		x.Id(d.ID).Update(d)
 	}
+}
+
+func (d *DockerServer) Info() (*docker.DockerInfo, error) {
+	client, err := d.client()
+	if err != nil {
+		return nil, err
+	}
+
+	info, err := client.Info()
+	if err != nil {
+		return nil, err
+	}
+
+	return info, nil
+}
+
+func (d *DockerServer) client() (*docker.Client, error) {
+	if d._client == nil {
+		client, err := docker.NewClient(d.Endpoint)
+		if err != nil {
+			return nil, err
+		}
+		d._client = client
+	}
+	return d._client, nil
 }
