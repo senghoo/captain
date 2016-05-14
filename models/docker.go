@@ -11,10 +11,11 @@ type DockerServer struct {
 	ID       int64
 	Name     string `xorm:"not null unique"`
 	Endpoint string
-	Created  time.Time      `xorm:"CREATED"`
-	Updated  time.Time      `xorm:"UPDATED"`
-	Deleted  time.Time      `xorm:"deleted"`
-	_client  *docker.Client `xorm:"-"`
+	Created  time.Time          `xorm:"CREATED"`
+	Updated  time.Time          `xorm:"UPDATED"`
+	Deleted  time.Time          `xorm:"deleted"`
+	_client  *docker.Client     `xorm:"-"`
+	_info    *docker.DockerInfo `xorm:"-"`
 }
 
 func GetDockerServerByID(id int64) (*DockerServer, error) {
@@ -59,17 +60,20 @@ func (d *DockerServer) Save() {
 }
 
 func (d *DockerServer) Info() (*docker.DockerInfo, error) {
-	client, err := d.client()
-	if err != nil {
-		return nil, err
+	if d._info == nil {
+		client, err := d.client()
+		if err != nil {
+			return nil, err
+		}
+
+		info, err := client.Info()
+		if err != nil {
+			return nil, err
+		}
+		d._info = info
 	}
 
-	info, err := client.Info()
-	if err != nil {
-		return nil, err
-	}
-
-	return info, nil
+	return d._info, nil
 }
 
 func (d *DockerServer) client() (*docker.Client, error) {
