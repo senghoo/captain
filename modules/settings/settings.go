@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 
 	"github.com/olebedev/config"
 )
@@ -73,5 +74,21 @@ func GetStaticPath() (path string) {
 		return
 	}
 	path, _ = os.Getwd()
+	return
+}
+
+func GetWorkspacePath() (p string) {
+	p = os.Getenv("CAPTAIN_WORKSPACE")
+	if p != "" {
+		return
+	}
+
+	p, _ = Get("app.workspace")
+	if p != "" {
+		return
+	}
+	p, _ = os.Getwd()
+	p = path.Join(p, "workspace")
+
 	return
 }
