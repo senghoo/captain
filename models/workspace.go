@@ -32,3 +32,14 @@ func (w *Workspace) Save() {
 func (w *Workspace) WorkDir() string {
 	return path.Join(settings.GetWorkspacePath(), w.Name)
 }
+
+func (w *Workspace) Repositories() (error, []*Repository) {
+	var repos []*Repository
+	err := x.Find(repos, &Repository{WorkspaceID: w.ID})
+	return err, repos
+}
+
+func (w *Workspace) AddRepository(repo *Repository) {
+	repo.WorkspaceID = w.ID
+	x.Insert(repo)
+}
