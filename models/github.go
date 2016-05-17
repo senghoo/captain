@@ -105,6 +105,35 @@ func (a *GithubAccount) Save() {
 	}
 }
 
+func (a *GithubAccount) Repos() (r []*Repository, err error) {
+	repos, _, err := a.Client().Repositories.List("", nil)
+	if err != nil {
+		return
+	}
+
+	for _, repo := range repos {
+		n := &Repository{
+			Name:          *repo.Name,
+			Site:          "github",
+			FullName:      *repo.FullName,
+			Description:   *repo.Description,
+			Homepage:      *repo.Homepage,
+			DefaultBranch: *repo.DefaultBranch,
+			MasterBranch:  *repo.MasterBranch,
+			CreatedAt:     repo.CreatedAt.Time,
+			PushedAt:      repo.PushedAt.Time,
+			UpdatedAt:     repo.UpdatedAt.Time,
+			HTMLURL:       *repo.HTMLURL,
+			CloneURL:      *repo.CloneURL,
+			GitURL:        *repo.GitURL,
+			SSHURL:        *repo.SSHURL,
+			Language:      *repo.Language,
+		}
+		r = append(r, n)
+	}
+	return
+}
+
 func GithubAccounts() ([]*GithubAccount, error) {
 	var accounts []*GithubAccount
 	return accounts, x.Asc("id").Find(&accounts)
