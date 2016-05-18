@@ -24,6 +24,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Login Name</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -31,6 +32,8 @@
                             <tr>
                                 <td>{{ account.ID }}</td>
                                 <td>{{ account.Name }}</td>
+                                <td>{{ account.Name }}</td>
+                                <td><a href="/github/{{ account.ID }}">info</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

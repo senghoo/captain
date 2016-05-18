@@ -1,7 +1,6 @@
 package docker
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/go-macaron/csrf"
@@ -44,13 +43,11 @@ func Info(ctx *middleware.Context) {
 	id, _ := strconv.ParseInt(ctx.Params(":id"), 10, 32)
 	s, err := models.GetDockerServerByID(id)
 	if err != nil {
-		fmt.Printf("%s\n", err)
 		return
 	}
 
 	info, err := s.Info()
 	if err != nil {
-		fmt.Printf("%s\n", err)
 		return
 	}
 

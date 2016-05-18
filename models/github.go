@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -57,6 +58,17 @@ type GithubAccount struct {
 	Updated     time.Time      `xorm:"UPDATED"`
 	Deleted     time.Time      `xorm:"deleted"`
 	client      *github.Client `xorm:"-"`
+}
+
+func GetGithubAccountByID(id int64) (*GithubAccount, error) {
+	s := new(GithubAccount)
+	has, err := x.Id(id).Get(s)
+	if err != nil {
+		return nil, err
+	} else if !has {
+		return nil, fmt.Errorf("Docker server id: %d not exist", id)
+	}
+	return s, nil
 }
 
 func NewGithubAccount(token string) (a *GithubAccount) {
@@ -117,7 +129,6 @@ func (a *GithubAccount) Repos() (r []*Repository, err error) {
 			Site:          "github",
 			FullName:      *repo.FullName,
 			Description:   *repo.Description,
-			Homepage:      *repo.Homepage,
 			DefaultBranch: *repo.DefaultBranch,
 			MasterBranch:  *repo.MasterBranch,
 			CreatedAt:     repo.CreatedAt.Time,
@@ -127,7 +138,12 @@ func (a *GithubAccount) Repos() (r []*Repository, err error) {
 			CloneURL:      *repo.CloneURL,
 			GitURL:        *repo.GitURL,
 			SSHURL:        *repo.SSHURL,
-			Language:      *repo.Language,
+		}
+		if repo.Homepage != nil {
+			n.Homepage = *repo.Homepage
+		}
+		if repo.Language != nil {
+			n.Language = *repo.Language
 		}
 		r = append(r, n)
 	}
