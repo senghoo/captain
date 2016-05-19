@@ -21,6 +21,11 @@ func NewWorkspace(name string) *Workspace {
 	}
 }
 
+func Workspaces() ([]*Workspace, error) {
+	var workspaces []*Workspace
+	return workspaces, x.Asc("id").Find(&workspaces)
+}
+
 func (w *Workspace) Save() {
 	if w.ID == 0 {
 		x.Insert(w)

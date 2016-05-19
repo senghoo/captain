@@ -6,6 +6,7 @@ import (
 	"github.com/senghoo/captain/web/controllers/docker"
 	"github.com/senghoo/captain/web/controllers/github"
 	"github.com/senghoo/captain/web/controllers/user"
+	"github.com/senghoo/captain/web/controllers/workspace"
 	"github.com/senghoo/captain/web/middleware"
 )
 
@@ -33,5 +34,9 @@ func (s *Server) initRoute() {
 		s.m.Get("/new", docker.New)
 		s.m.Post("/new", binding.BindIgnErr(docker.NewForm{}), docker.NewPost)
 		s.m.Get("/:id([0-9]+)", docker.Info)
+	}, reqSignIn)
+
+	s.m.Group("/workspace", func() {
+		s.m.Get("/", workspace.Index)
 	}, reqSignIn)
 }
