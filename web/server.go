@@ -38,7 +38,10 @@ func (s *Server) initMiddleWare() {
 	s.m.Use(macaron.Static(path.Join(settings.GetStaticPath(), "public")))
 	s.m.Use(macaron.Static(path.Join(settings.GetStaticPath(), "assets")))
 	s.m.Use(cache.Cacher())
-	s.m.Use(session.Sessioner())
+	s.m.Use(session.Sessioner(session.Options{
+		Provider:       "file",
+		ProviderConfig: "tmp/sessions",
+	}))
 	s.m.Use(csrf.Csrfer(csrf.Options{
 		Secret:    settings.GetOrDefault("csrf.key", "development csrf keys"),
 		SetCookie: true,
