@@ -57,6 +57,14 @@ func (ctx *Context) HTML(status int, name string, data ...interface{}) {
 	ctx.Context.HTML(status, name, data...)
 }
 
+func (ctx *Context) HandleErr(err error, ret string) {
+	if err != nil && macaron.Env != macaron.PROD {
+		ctx.Data["ErrorMsg"] = err
+	}
+	ctx.Data["Ret"] = ret
+	ctx.HTML(500, "500.html")
+}
+
 func Contexter() macaron.Handler {
 	return func(c *macaron.Context, cache cache.Cache, sess session.Store, f *session.Flash, x csrf.CSRF) {
 		ctx := &Context{
