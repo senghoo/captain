@@ -1,6 +1,8 @@
 package web
 
 import (
+	"log"
+	"net/http"
 	"path"
 
 	"github.com/go-macaron/cache"
@@ -22,11 +24,12 @@ func NewServer() *Server {
 	}
 }
 
-func (s *Server) Run() {
+func (s *Server) Run(listen string) {
 	s.initRoute()
 	s.initMiddleWare()
 	s.m.SetAutoHead(true)
-	s.m.Run()
+	log.Printf("Server is running... \nListen http://%s\n", listen)
+	log.Println(http.ListenAndServe(listen, s.m))
 }
 
 func (s *Server) initMiddleWare() {

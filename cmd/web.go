@@ -11,11 +11,11 @@ var CmdWeb = cli.Command{
 	Description: `Captain web server.`,
 	Action:      runWeb,
 	Flags: []cli.Flag{
-		stringFlag("port, p", "8000", "Temporary port number to prevent conflict"),
+		stringFlag("listen, l", "localhost:4000", "Temporary port number to prevent conflict"),
 	},
 }
 
 func runWeb(ctx *cli.Context) {
 	server := web.NewServer()
-	server.Run()
+	server.Run(ctx.String("listen"))
 }
