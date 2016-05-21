@@ -25,13 +25,14 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
-                                <th>Endpoint</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for workspace in Workspaces %}
                             <tr>
+                                <td>{{workspace.ID}}</td>
+                                <td>{{workspace.Name}}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

@@ -38,5 +38,7 @@ func (s *Server) initRoute() {
 
 	s.m.Group("/workspace", func() {
 		s.m.Get("/", workspace.Index)
+		s.m.Get("/new", workspace.New)
+		s.m.Post("/new", binding.BindIgnErr(workspace.NewForm{}), workspace.NewPost)
 	}, reqSignIn)
 }
