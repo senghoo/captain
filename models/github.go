@@ -123,21 +123,30 @@ func (a *GithubAccount) Repos() (r []*Repository, err error) {
 		return
 	}
 
+	emptyIfNil := func(s *string) string {
+		if s != nil {
+			return *s
+		}
+		return ""
+	}
+
 	for _, repo := range repos {
 		n := &Repository{
-			Name:          *repo.Name,
+			Name:          emptyIfNil(repo.Name),
 			Site:          "github",
-			FullName:      *repo.FullName,
-			Description:   *repo.Description,
-			DefaultBranch: *repo.DefaultBranch,
-			MasterBranch:  *repo.MasterBranch,
+			FullName:      emptyIfNil(repo.FullName),
+			Description:   emptyIfNil(repo.Description),
+			DefaultBranch: emptyIfNil(repo.DefaultBranch),
+			MasterBranch:  emptyIfNil(repo.MasterBranch),
+			Homepage:      emptyIfNil(repo.Homepage),
+			Language:      emptyIfNil(repo.Language),
 			CreatedAt:     repo.CreatedAt.Time,
 			PushedAt:      repo.PushedAt.Time,
 			UpdatedAt:     repo.UpdatedAt.Time,
-			HTMLURL:       *repo.HTMLURL,
-			CloneURL:      *repo.CloneURL,
-			GitURL:        *repo.GitURL,
-			SSHURL:        *repo.SSHURL,
+			HTMLURL:       emptyIfNil(repo.HTMLURL),
+			CloneURL:      emptyIfNil(repo.CloneURL),
+			GitURL:        emptyIfNil(repo.GitURL),
+			SSHURL:        emptyIfNil(repo.SSHURL),
 		}
 		if repo.Homepage != nil {
 			n.Homepage = *repo.Homepage
@@ -145,6 +154,11 @@ func (a *GithubAccount) Repos() (r []*Repository, err error) {
 		if repo.Language != nil {
 			n.Language = *repo.Language
 		}
+
+		if repo.MasterBranch != nil {
+			n.MasterBranch = *repo.MasterBranch
+		}
+
 		r = append(r, n)
 	}
 	return
