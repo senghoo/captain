@@ -118,7 +118,7 @@ func (a *GithubAccount) Save() {
 }
 
 func (a *GithubAccount) Repos() (r []*Repository, err error) {
-	repos, _, err := a.Client().Repositories.List("", nil)
+	repos, _, err := a.Client().Repositories.List("", &github.RepositoryListOptions{Type: "all", Sort: "updated", Direction: "desc"})
 	if err != nil {
 		return
 	}

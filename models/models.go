@@ -75,3 +75,7 @@ func NewEngine() (err error) {
 
 	return nil
 }
+
+func GetByID(id int64, obj interface{}) (has bool, err error) {
+	return x.Id(id).Get(obj)
+}

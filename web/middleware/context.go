@@ -65,6 +65,10 @@ func (ctx *Context) HandleErr(err error, ret string) {
 	ctx.HTML(500, "500.html")
 }
 
+func (ctx *Context) NotFound(msg string) {
+	ctx.HTML(404, "404.html")
+}
+
 func Contexter() macaron.Handler {
 	return func(c *macaron.Context, cache cache.Cache, sess session.Store, f *session.Flash, x csrf.CSRF) {
 		ctx := &Context{
