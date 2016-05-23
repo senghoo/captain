@@ -164,12 +164,11 @@ func (a *GithubAccount) Repos() (r []*Repository, err error) {
 	return
 }
 
-func GithubAccounts() ([]*GithubAccount, error) {
-	var accounts []*GithubAccount
-	return accounts, x.Asc("id").Find(&accounts)
-}
-
-func CountGithubAccounts() int64 {
-	count, _ := x.Count(new(GithubAccount))
-	return count
+func GetGithubAccount() (*GithubAccount, error) {
+	account := new(GithubAccount)
+	has, err := x.Get(account)
+	if !has {
+		return nil, nil
+	}
+	return account, err
 }

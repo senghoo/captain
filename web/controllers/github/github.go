@@ -1,8 +1,6 @@
 package github
 
 import (
-	"strconv"
-
 	"github.com/senghoo/captain/models"
 	"github.com/senghoo/captain/web/middleware"
 )
@@ -40,19 +38,8 @@ func Callback(ctx *middleware.Context) {
 	ctx.Redirect("/github")
 }
 
-func List(ctx *middleware.Context) {
-	accounts, err := models.GithubAccounts()
-	if err != nil {
-		return
-	}
-	ctx.Data["GithubAccounts"] = accounts
-
-	ctx.HTML(200, "github/list")
-}
-
 func Info(ctx *middleware.Context) {
-	id, _ := strconv.ParseInt(ctx.Params(":id"), 10, 32)
-	a, err := models.GetGithubAccountByID(id)
+	a, err := models.GetGithubAccount()
 	if err != nil {
 		return
 	}
