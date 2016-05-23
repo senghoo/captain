@@ -48,17 +48,24 @@ func Info(ctx *middleware.Context) {
 		return
 	}
 	ctx.Data["Workspace"] = ws
+	ctx.Data["Repos"], _ = ws.Repositories()
 	ctx.HTML(200, "workspace/info")
 }
 
-func AddRepository(ctx *middleware.Context) {
-	accounts, err := models.GithubAccounts()
+func AddRepository(ctx *middleware.Context, x csrf.CSRF) {
+	github, err := models.GetGithubAccount()
 	if err != nil {
+		ctx.HandleErr(err, "/workspace")
 		return
 	}
-	ctx.Data["GithubAccounts"] = accounts
+	if github != nil {
+		ctx.Data["GithubAccounts"] = github
+		ctx.Data["GithubRepos"], _ = github.Repos()
+	}
 
-	ctx.HTML(200, "workspace/repo_list")
+	ctx.Data["csrf_token"] = x.GetToken()
+
+	ctx.HTML(200, "workspace/new_repo")
 }
 
 type AddRepositoryForm struct {

@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Repository struct {
 	ID            int64
@@ -24,4 +27,8 @@ type Repository struct {
 	Created       time.Time `xorm:"CREATED"`
 	Updated       time.Time `xorm:"UPDATED"`
 	Deleted       time.Time `xorm:"deleted"`
+}
+
+func (r *Repository) Identify() string {
+	return fmt.Sprintf("%s:%s", r.Site, r.FullName)
 }

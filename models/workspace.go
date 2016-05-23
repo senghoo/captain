@@ -38,10 +38,10 @@ func (w *Workspace) WorkDir() string {
 	return path.Join(settings.GetWorkspacePath(), w.Name)
 }
 
-func (w *Workspace) Repositories() (error, []*Repository) {
+func (w *Workspace) Repositories() ([]*Repository, error) {
 	var repos []*Repository
 	err := x.Find(repos, &Repository{WorkspaceID: w.ID})
-	return err, repos
+	return repos, err
 }
 
 func (w *Workspace) AddRepository(repo *Repository) {
