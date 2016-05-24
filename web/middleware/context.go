@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"fmt"
+
 	"github.com/go-macaron/cache"
 	"github.com/go-macaron/csrf"
 	"github.com/go-macaron/session"
@@ -58,15 +60,16 @@ func (ctx *Context) HTML(status int, name string, data ...interface{}) {
 }
 
 func (ctx *Context) HandleErr(err error, ret string) {
+	fmt.Printf("500: %s\n", err)
 	if err != nil && macaron.Env != macaron.PROD {
 		ctx.Data["ErrorMsg"] = err
 	}
 	ctx.Data["Ret"] = ret
-	ctx.HTML(500, "500.html")
+	ctx.HTML(500, "500")
 }
 
 func (ctx *Context) NotFound(msg string) {
-	ctx.HTML(404, "404.html")
+	ctx.HTML(404, "404")
 }
 
 func Contexter() macaron.Handler {

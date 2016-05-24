@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
 <h2>Internal Server Error</h2>
-{{ ErrorMsg }}
+{{ ErrorMsg.String() }}
 
 <a href="{{Ret}}">Return</a>
 

@@ -20,7 +20,7 @@
                             <input type="hidden" name="_csrf" value="{{csrf_token}}">
                             <div class="form-group">
                                 <label>Repo: </label>
-                                <select class="selectpicker" data-live-search="true">
+                                <select class="selectpicker" data-live-search="true" name="repo_identify">
                                     <optgroup label="Github">
                                         {% for repo in GithubRepos %}
                                         <option value="{{ repo.Identify() }}">{{ repo.FullName }}</option>

@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -27,6 +28,23 @@ type Repository struct {
 	Created       time.Time `xorm:"CREATED"`
 	Updated       time.Time `xorm:"UPDATED"`
 	Deleted       time.Time `xorm:"deleted"`
+}
+
+func GetRepositoryByIdentify(identify string) (*Repository, error) {
+	s := strings.Split(identify, ":")
+	if len(s) != 2 {
+		return nil, fmt.Errorf("unknown identify %s", identify)
+	}
+
+	switch s[0] {
+	case "github":
+		acc, err := GetGithubAccount()
+		if err != nil {
+			return nil, err
+		}
+		return acc.GetRepoByFullName(s[1])
+	}
+	return nil, fmt.Errorf("unknown identify %s", identify)
 }
 
 func (r *Repository) Identify() string {

@@ -2,7 +2,9 @@ package models
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -123,45 +125,36 @@ func (a *GithubAccount) Repos() (r []*Repository, err error) {
 		return
 	}
 
+	for _, repo := range repos {
+		r = append(r, githubRepoToLocal(&repo))
+	}
+	return
+}
+
+func githubRepoToLocal(repo *github.Repository) *Repository {
 	emptyIfNil := func(s *string) string {
 		if s != nil {
 			return *s
 		}
 		return ""
 	}
-
-	for _, repo := range repos {
-		n := &Repository{
-			Name:          emptyIfNil(repo.Name),
-			Site:          "github",
-			FullName:      emptyIfNil(repo.FullName),
-			Description:   emptyIfNil(repo.Description),
-			DefaultBranch: emptyIfNil(repo.DefaultBranch),
-			MasterBranch:  emptyIfNil(repo.MasterBranch),
-			Homepage:      emptyIfNil(repo.Homepage),
-			Language:      emptyIfNil(repo.Language),
-			CreatedAt:     repo.CreatedAt.Time,
-			PushedAt:      repo.PushedAt.Time,
-			UpdatedAt:     repo.UpdatedAt.Time,
-			HTMLURL:       emptyIfNil(repo.HTMLURL),
-			CloneURL:      emptyIfNil(repo.CloneURL),
-			GitURL:        emptyIfNil(repo.GitURL),
-			SSHURL:        emptyIfNil(repo.SSHURL),
-		}
-		if repo.Homepage != nil {
-			n.Homepage = *repo.Homepage
-		}
-		if repo.Language != nil {
-			n.Language = *repo.Language
-		}
-
-		if repo.MasterBranch != nil {
-			n.MasterBranch = *repo.MasterBranch
-		}
-
-		r = append(r, n)
+	return &Repository{
+		Name:          emptyIfNil(repo.Name),
+		Site:          "github",
+		FullName:      emptyIfNil(repo.FullName),
+		Description:   emptyIfNil(repo.Description),
+		DefaultBranch: emptyIfNil(repo.DefaultBranch),
+		MasterBranch:  emptyIfNil(repo.MasterBranch),
+		Homepage:      emptyIfNil(repo.Homepage),
+		Language:      emptyIfNil(repo.Language),
+		CreatedAt:     repo.CreatedAt.Time,
+		PushedAt:      repo.PushedAt.Time,
+		UpdatedAt:     repo.UpdatedAt.Time,
+		HTMLURL:       emptyIfNil(repo.HTMLURL),
+		CloneURL:      emptyIfNil(repo.CloneURL),
+		GitURL:        emptyIfNil(repo.GitURL),
+		SSHURL:        emptyIfNil(repo.SSHURL),
 	}
-	return
 }
 
 func GetGithubAccount() (*GithubAccount, error) {
@@ -171,4 +164,14 @@ func GetGithubAccount() (*GithubAccount, error) {
 		return nil, nil
 	}
 	return account, err
+}
+
+func (a *GithubAccount) GetRepoByFullName(fullname string) (*Repository, error) {
+	s := strings.Split(fullname, "/")
+	if len(s) != 2 {
+		return nil, errors.New("fullname format error")
+	}
+
+	repo, _, err := a.Client().Repositories.Get(s[0], s[1])
+	return githubRepoToLocal(repo), err
 }

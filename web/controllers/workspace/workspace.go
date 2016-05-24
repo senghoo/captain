@@ -69,10 +69,29 @@ func AddRepository(ctx *middleware.Context, x csrf.CSRF) {
 }
 
 type AddRepositoryForm struct {
-	FullName string `binding:"Required;MaxSize(254)"`
-	Source   string `binding:"Required;MaxSize(254)"`
+	RepoIdentify string `binding:"Required;MaxSize(254)"`
 }
 
 func PostAddRepository(ctx *middleware.Context, form AddRepositoryForm) {
+	repo, err := models.GetRepositoryByIdentify(form.RepoIdentify)
 
+	if err != nil {
+		ctx.HandleErr(err, "/workspace")
+		return
+	}
+
+	ws := new(models.Workspace)
+	id, _ := strconv.ParseInt(ctx.Params(":id"), 10, 32)
+	has, err := models.GetByID(id, ws)
+	if !has {
+		ctx.NotFound("")
+		return
+	}
+
+	if err != nil {
+		ctx.HandleErr(err, "")
+		return
+	}
+
+	ws.AddRepository(repo)
 }
