@@ -20,7 +20,30 @@
                 </a>
                 <div class="clearfix"></div>
             </div>
-            <div class="panel-body">Panel content</div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>FullName</th>
+                                <th>PushedAt</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for repo in Repos %}
+                            <tr>
+                                <td>{{repo.Site}}</td>
+                                <td>{{repo.FullName}}</td>
+                                <td>{{repo.PushedAt}}</td>
+                                <td></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     <!-- /.col-lg-12 -->

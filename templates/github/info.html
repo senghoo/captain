@@ -12,7 +12,7 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Updated</th>
+                            <th>Pushed</th>
                             <th>Clone</th>
                         </tr>
                     </thead>
@@ -20,7 +20,7 @@
                         {% for repo in Repos %}
                         <tr>
                             <td><a href="{{ repo.HTMLURL }}">{{ repo.Name }} </a></td>
-                            <td>{{ repo.UpdatedAt }}</td>
+                            <td>{{ repo.PushedAt }}</td>
                             <td>{{ repo.GitURL }}</td>
                         </tr>
                         {% endfor %}

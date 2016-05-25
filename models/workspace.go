@@ -40,7 +40,7 @@ func (w *Workspace) WorkDir() string {
 
 func (w *Workspace) Repositories() ([]*Repository, error) {
 	var repos []*Repository
-	err := x.Find(repos, &Repository{WorkspaceID: w.ID})
+	err := x.Find(&repos, &Repository{WorkspaceID: w.ID})
 	return repos, err
 }
 
