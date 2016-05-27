@@ -37,7 +37,9 @@
                                 <td>{{repo.Site}}</td>
                                 <td>{{repo.FullName}}</td>
                                 <td>{{repo.PushedAt}}</td>
-                                <td></td>
+                                <td>
+                                    <a href="/repo/{{repi.ID}}/clone"> Clone </a>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>

@@ -6,6 +6,8 @@ import (
 	"path"
 	"strings"
 	"time"
+
+	"github.com/senghoo/captain/modules/git"
 )
 
 const (
@@ -61,18 +63,25 @@ func (r *Repository) Identify() string {
 
 func (r *Repository) Clone() {
 	if r.Status == REPOSITORY_STATUS_IDLE {
-		go r.clone()
+		go func() {
+			r.Status = REPOSITORY_STATUS_CLONEING
+			x.Id(r.ID).Update(r)
+			defer func() {
+				r.Status = REPOSITORY_STATUS_IDLE
+				x.Id(r.ID).Update(r)
+			}()
+			r.clone()
+		}()
 	}
 }
 
-func (r *Repository) clone() {
-	r.Status = REPOSITORY_STATUS_CLONEING
-	x.Id(r.ID).Update(r)
-	defer func() {
-		r.Status = REPOSITORY_STATUS_IDLE
-		x.Id(r.ID).Update(r)
-	}()
-
+func (r *Repository) clone() error {
+	p, err := r.Path()
+	if err != nil {
+		return err
+	}
+	git.Clone(r.CloneURL, p)
+	return nil
 }
 
 func (r *Repository) Workspace() *Workspace {
@@ -95,5 +104,5 @@ func (r *Repository) Path() (string, error) {
 	if ws == nil {
 		return "", errors.New("Workspace not exists")
 	}
-	return path.Join(ws.WorkDir(), "repos", r.FullName)
+	return path.Join(ws.WorkDir(), "repos", r.FullName), nil
 }
