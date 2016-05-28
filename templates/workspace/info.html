@@ -28,6 +28,7 @@
                                 <th>Source</th>
                                 <th>FullName</th>
                                 <th>PushedAt</th>
+                                <th>Status</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -37,6 +38,7 @@
                                 <td>{{repo.Site}}</td>
                                 <td>{{repo.FullName}}</td>
                                 <td>{{repo.PushedAt}}</td>
+                                <td>{{repo.StatusString()}}</td>
                                 <td>
                                     <a href="/repo/{{repo.ID}}/clone"> Clone </a>
                                 </td>

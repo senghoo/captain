@@ -60,15 +60,25 @@ func GetRepositoryByIdentify(identify string) (*Repository, error) {
 func (r *Repository) Identify() string {
 	return fmt.Sprintf("%s:%s", r.Site, r.FullName)
 }
+func (r *Repository) StatusString() string {
+	switch r.Status {
+	case REPOSITORY_STATUS_IDLE:
+		return "idle"
+	case REPOSITORY_STATUS_CLONEING:
+		return "clone"
+	default:
+		return "unknown"
+	}
+}
 
 func (r *Repository) Clone() {
 	if r.Status == REPOSITORY_STATUS_IDLE {
 		go func() {
 			r.Status = REPOSITORY_STATUS_CLONEING
-			x.Id(r.ID).Update(r)
+			x.Id(r.ID).Cols("status").Update(r)
 			defer func() {
 				r.Status = REPOSITORY_STATUS_IDLE
-				x.Id(r.ID).Update(r)
+				x.Id(r.ID).Cols("status").Update(r)
 			}()
 			r.clone()
 		}()

@@ -1,6 +1,6 @@
 package git
 
-func Clone(source, path string) {
+func Clone(source, path string) (string, error) {
 	c := NewCommand("clone", source, path)
-	c.Run()
+	return c.Run()
 }
