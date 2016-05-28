@@ -5,6 +5,7 @@ import (
 	"github.com/senghoo/captain/web/controllers"
 	"github.com/senghoo/captain/web/controllers/docker"
 	"github.com/senghoo/captain/web/controllers/github"
+	"github.com/senghoo/captain/web/controllers/repo"
 	"github.com/senghoo/captain/web/controllers/user"
 	"github.com/senghoo/captain/web/controllers/workspace"
 	"github.com/senghoo/captain/web/middleware"
@@ -43,4 +44,8 @@ func (s *Server) initRoute() {
 		s.m.Get("/:id([0-9]+)/repository/new", workspace.AddRepository)
 		s.m.Post("/:id([0-9]+)/repository/new", binding.BindIgnErr(workspace.AddRepositoryForm{}), workspace.PostAddRepository)
 	}, reqSignIn)
+
+	s.m.Group("/repo", func() {
+		s.m.Get("/:id([0-9]+)/clone", repo.Clone)
+	})
 }
