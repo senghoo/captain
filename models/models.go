@@ -20,7 +20,7 @@ var (
 )
 
 func init() {
-	tables = append(tables, new(User), new(GithubAccount), new(DockerServer), new(Workspace), new(Repository))
+	tables = append(tables, new(User), new(GithubAccount), new(DockerServer), new(Workspace), new(Repository), new(Build))
 	LoadSetting()
 }
 
