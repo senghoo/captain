@@ -2,6 +2,8 @@ package models
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"path"
 	"time"
 
@@ -48,23 +50,25 @@ func (w *Workspace) Repositories() ([]*Repository, error) {
 
 func (w *Workspace) AddRepository(repo *Repository) {
 	repo.WorkspaceID = w.ID
-	x.Insert(repo)
+	x.Insert(rep)
 }
 
 type Build struct {
 	ID          int64
 	WorkspaceID int64
+	workspace   *Workspace `xorm:"-"`
 	BuildNo     int64
 	Type        string
-	Name        string    `xorm:"not null unique"`
-	Created     time.Time `xorm:"CREATED"`
-	Updated     time.Time `xorm:"UPDATED"`
-	Deleted     time.Time `xorm:"deleted"`
+	Name        string      `xorm:"not null unique"`
+	Created     time.Time   `xorm:"CREATED"`
+	Updated     time.Time   `xorm:"UPDATED"`
+	Deleted     time.Time   `xorm:"deleted"`
+	logger      *log.Logger `xorm:"-"`
 }
 
 func (w *Workspace) NewBuild(t string) (*Build, error) {
 	buildNo := w.BuildNo
-	w.BuildNo += 1
+	w.BuildNo++
 	w.Save()
 	build := &Build{
 		WorkspaceID: w.ID,
@@ -73,5 +77,46 @@ func (w *Workspace) NewBuild(t string) (*Build, error) {
 		Name:        fmt.Sprintf("%s:%s:%d", w.Name, t, buildNo),
 	}
 	_, err := x.Insert(build)
+	if err != nil {
+		return nil, err
+	}
+
 	return build, err
+}
+
+func (b *Build) Logger() *log.Logger {
+	if b.logger != nil {
+		return b.logger
+	}
+
+	f, _ := os.Create(b.LogFile())
+
+	b.logger = log.New(f, fmt.Sprintf("build[%d]", b.BuildNo), log.Lshortfile)
+	return b.logger
+}
+
+func (b *Build) LogFile() string {
+	return path.Join(b.Path(), "log.log")
+}
+
+func (b *Build) Workspace() *Workspace {
+	if b.workspace != nil {
+		return b.workspace
+	}
+
+	if b.WorkspaceID != 0 {
+		ws := new(Workspace)
+		has, _ := GetByID(b.WorkspaceID, ws)
+		if has {
+			return ws
+		}
+	}
+	return nil
+}
+
+func (b *Build) Path() string {
+	ws := b.Workspace()
+	p := path.Join(ws.WorkDir(), "builds", fmt.Sprintf("%d", b.BuildNo))
+	os.MkdirAll(p, 0700)
+	return p
 }
