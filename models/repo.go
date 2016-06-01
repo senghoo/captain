@@ -72,17 +72,7 @@ func (r *Repository) StatusString() string {
 }
 
 func (r *Repository) Clone() {
-	if r.Status == REPOSITORY_STATUS_IDLE {
-		go func() {
-			r.Status = REPOSITORY_STATUS_CLONEING
-			x.Id(r.ID).Cols("status").Update(r)
-			defer func() {
-				r.Status = REPOSITORY_STATUS_IDLE
-				x.Id(r.ID).Cols("status").Update(r)
-			}()
-			r.clone()
-		}()
-	}
+	r.clone()
 }
 
 func (r *Repository) clone() error {
