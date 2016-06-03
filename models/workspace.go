@@ -50,7 +50,7 @@ func (w *Workspace) Repositories() ([]*Repository, error) {
 
 func (w *Workspace) AddRepository(repo *Repository) {
 	repo.WorkspaceID = w.ID
-	x.Insert(rep)
+	x.Insert(repo)
 }
 
 type Build struct {
