@@ -3,7 +3,7 @@ package command
 import "github.com/senghoo/captain/models"
 
 type RepoUpdateCommand struct {
-	RepoIdentify string
+	RepoID int64
 	Status int
 }
 
@@ -13,23 +13,23 @@ const (
 	RepoNotFound
 )
 
-
-func NewRepoUpdateCommand(identify string) *RepoUpdateCommand {
+func NewRepoUpdateCommand(repoID int64) *RepoUpdateCommand {
 	return &RepoUpdateCommand{
-		RepoIdentify: identify,
+		RepoID: repoID,
 	}
 }
 
-func (r *RepoPullCommand) Run(build *models.Build) {
-	ws := build.Workspace()
-	if ws == nil{
-		r.Status = WorkspaceNotFound
+func (r *RepoUpdateCommand) Run(build *models.Build) {
+	logger := build.Logger()
+
+	repo := new(models.Repository)
+	has, err := models.GetByID(r.RepoID, repo)
+	if !has {
+		logger.Printf("Error: %d has not exists", r.RepoID)
 		return
 	}
-	repos, err := ws.Repositories()
-	if err != nil{
-		
+	if err != nil {
+		logger.Printf("Error: %s", err)
+		return
 	}
-
-	for repo := range k
 }
