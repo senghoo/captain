@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"os"
 	"path"
 	"strings"
 	"time"
@@ -71,8 +72,40 @@ func (r *Repository) StatusString() string {
 	}
 }
 
+func (r *Repository) Update() {
+	if r.Exists() {
+		r.Pull()
+	} else {
+		r.clone()
+	}
+}
+
+func (r *Repository) Pull() (string, error) {
+	p, err := r.Path()
+	if err != nil {
+		return "", err
+	}
+	return git.Pull(p)
+}
+
 func (r *Repository) Clone() {
 	r.clone()
+}
+
+func (r *Repository) Exists() bool {
+	p, err := r.Path()
+	if err != nil {
+		return false
+	}
+
+	_, err = os.Stat(p)
+	if err == nil {
+		return true
+	}
+	if os.IsNotExist(err) {
+		return false
+	}
+	return true
 }
 
 func (r *Repository) clone() error {
