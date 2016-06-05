@@ -72,11 +72,11 @@ func (r *Repository) StatusString() string {
 	}
 }
 
-func (r *Repository) Update() {
+func (r *Repository) Update() (string, error) {
 	if r.Exists() {
-		r.Pull()
+		return r.Pull()
 	} else {
-		r.clone()
+		return r.Clone()
 	}
 }
 
@@ -86,10 +86,6 @@ func (r *Repository) Pull() (string, error) {
 		return "", err
 	}
 	return git.Pull(p)
-}
-
-func (r *Repository) Clone() {
-	r.clone()
 }
 
 func (r *Repository) Exists() bool {
@@ -108,13 +104,12 @@ func (r *Repository) Exists() bool {
 	return true
 }
 
-func (r *Repository) clone() error {
+func (r *Repository) Clone() (string, error) {
 	p, err := r.Path()
 	if err != nil {
-		return err
+		return "", err
 	}
-	git.Clone(r.CloneURL, p)
-	return nil
+	return git.Clone(r.CloneURL, p)
 }
 
 func (r *Repository) Workspace() *Workspace {

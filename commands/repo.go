@@ -32,5 +32,10 @@ func (r *RepoUpdateCommand) Run(build *models.Build) {
 		logger.Printf("Error: %s", err)
 		return
 	}
-	repo.Pull()
+	out, err := repo.Update()
+	logger.Printf("Output:\n>>>>>%s\n<<<<<", out)
+	if err != nil {
+		logger.Printf("Error: %s", err)
+		return
+	}
 }
