@@ -5,6 +5,7 @@ import "github.com/senghoo/captain/models"
 type RepoUpdateCommand struct {
 	RepoID int64
 	Status int
+	next   Command
 }
 
 const (
@@ -38,4 +39,12 @@ func (r *RepoUpdateCommand) Run(build *models.Build) {
 		logger.Printf("Error: %s", err)
 		return
 	}
+}
+
+func (r *RepoUpdateCommand) Next() Command {
+	return r.next
+}
+
+func (r *RepoUpdateCommand) SetNext(c Command) {
+	r.next = c
 }
