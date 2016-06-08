@@ -112,6 +112,19 @@ func (r *Repository) Clone() (string, error) {
 	return git.Clone(r.CloneURL, p)
 }
 
+func (r *Repository) Archive(format, branch, file string) (string, error) {
+	if !r.Exists() {
+		return "", errors.New("Repo not found")
+	}
+
+	p, err := r.Path()
+	if err != nil {
+		return "", err
+	}
+
+	return git.Archive(p, format, branch, file)
+}
+
 func (r *Repository) Workspace() *Workspace {
 	if r.workspace != nil {
 		return r.workspace

@@ -1,6 +1,10 @@
 package command
 
-import "github.com/senghoo/captain/models"
+import (
+	"path"
+
+	"github.com/senghoo/captain/models"
+)
 
 type RepoUpdateCommand struct {
 	RepoID int64
@@ -50,14 +54,20 @@ func (r *RepoUpdateCommand) SetNext(c Command) {
 }
 
 type RepoArchiveCommand struct {
-	RepoID int64
-	Status int
-	next   Command
+	RepoID  int64
+	Status  int
+	Format  string
+	Branch  string
+	OutFile string
+	next    Command
 }
 
-func NewRepoArchiveCommand(repoID int64) *RepoUpdateCommand {
-	return &RepoUpdateCommand{
-		RepoID: repoID,
+func NewRepoArchiveCommand(repoID int64, format, branch, file string) *RepoArchiveCommand {
+	return &RepoArchiveCommand{
+		RepoID:  repoID,
+		Format:  format,
+		Branch:  branch,
+		OutFile: file,
 	}
 }
 
@@ -74,7 +84,8 @@ func (r *RepoArchiveCommand) Run(build *models.Build) {
 		logger.Printf("Error: %s", err)
 		return
 	}
-	out, err := repo.Archive()
+	p := path.Join(build.Path(), r.OutFile)
+	out, err := repo.Archive(r.Format, r.Branch, p)
 	logger.Printf("Output:\n>>>>>%s\n<<<<<", out)
 	if err != nil {
 		logger.Printf("Error: %s", err)
