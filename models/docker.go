@@ -76,6 +76,15 @@ func (d *DockerServer) Info() (*docker.DockerInfo, error) {
 	return d._info, nil
 }
 
+func (d *DockerServer) Build(opt docker.BuildImageOptions) (err error) {
+	c, err := d.client()
+	if err != nil {
+		return
+	}
+	err = c.BuildImage(opt)
+	return
+}
+
 func (d *DockerServer) client() (*docker.Client, error) {
 	if d._client == nil {
 		client, err := docker.NewClient(d.Endpoint)
