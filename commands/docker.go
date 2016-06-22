@@ -8,7 +8,7 @@ import (
 	"github.com/senghoo/captain/models"
 )
 
-type DockerBuildZipCommand struct {
+type DockerBuildArchiveCommand struct {
 	DockerID int64
 	File     string
 	Name     string
@@ -18,9 +18,9 @@ type DockerBuildZipCommand struct {
 
 const defaultBuffSize = 1024 * 1024
 
-func NewDockerBuildZipCommand(name, file string, dockerID int64) *DockerBuildZipCommand {
+func NewDockerBuildArchiveCommand(name, file string, dockerID int64) *DockerBuildArchiveCommand {
 	buf := make([]byte, 0, defaultBuffSize)
-	return &DockerBuildZipCommand{
+	return &DockerBuildArchiveCommand{
 		DockerID: dockerID,
 		Name:     name,
 		File:     file,
@@ -28,9 +28,9 @@ func NewDockerBuildZipCommand(name, file string, dockerID int64) *DockerBuildZip
 	}
 }
 
-func (d *DockerBuildZipCommand) Run(build *models.Build) {
+func (d *DockerBuildArchiveCommand) Run(build *models.Build) {
 	logger := build.Logger()
-	d, err := models.GetDockerServerByID(d.DockerID)
+	dockerServ, err := models.GetDockerServerByID(d.DockerID)
 	if err != nil {
 		logger.Printf("Error: %s", err)
 		return
@@ -41,17 +41,17 @@ func (d *DockerBuildZipCommand) Run(build *models.Build) {
 		logger.Printf("Error: %s", err)
 		return
 	}
-	d.Build(docker.BuildImageOptions{
-		Name:        d.Name,
-		InputSteam:  file,
-		OutpubSteam: d.buffer,
+	dockerServ.Build(docker.BuildImageOptions{
+		Name:         d.Name,
+		InputStream:  file,
+		OutputStream: d.buffer,
 	})
 }
 
-func (r *DockerBuildZipCommand) Next() Command {
-	return r.next
+func (d *DockerBuildArchiveCommand) Next() Command {
+	return d.next
 }
 
-func (r *DockerBuildZipCommand) SetNext(c Command) {
-	r.next = c
+func (d *DockerBuildArchiveCommand) SetNext(c Command) {
+	d.next = c
 }
