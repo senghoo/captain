@@ -3,6 +3,7 @@ package command
 import (
 	"bytes"
 	"os"
+	"path"
 
 	"github.com/fsouza/go-dockerclient"
 	"github.com/senghoo/captain/models"
@@ -36,7 +37,7 @@ func (d *DockerBuildArchiveCommand) Run(build *models.Build) {
 		return
 	}
 	// file
-	file, err := os.Open(d.File)
+	file, err := os.Open(path.Join(build.Path(), d.File))
 	if err != nil {
 		logger.Printf("Error: %s", err)
 		return
