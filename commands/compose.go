@@ -1,9 +1,9 @@
 package command
 
-func AutoBuildComand(repoID, dockerID int64, branch, name string) Command {
+func AutoBuildCommand(repoID, dockerID int64, branch, name string) Command {
 	updateCommand := NewRepoUpdateCommand(repoID)
-	archiveCommand := NewRepoArchiveCommand(repoID, "zip", branch, "repo.zip")
-	buildComand := NewDockerBuildArchiveCommand(name, "repo.zip", dockerID)
+	archiveCommand := NewRepoArchiveCommand(repoID, "tar", branch, "repo.tar")
+	buildComand := NewDockerBuildArchiveCommand(name, "repo.tar", dockerID)
 
 	updateCommand.SetNext(archiveCommand)
 	archiveCommand.SetNext(buildComand)

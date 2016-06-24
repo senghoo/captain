@@ -3,11 +3,12 @@ package repo
 import (
 	"fmt"
 
+	"github.com/senghoo/captain/commands"
 	"github.com/senghoo/captain/models"
 	"github.com/senghoo/captain/web/middleware"
 )
 
-func Clone(ctx *middleware.Context) {
+func Build(ctx *middleware.Context) {
 	repo := new(models.Repository)
 	id := ctx.ParamsInt64(":id")
 
@@ -21,8 +22,12 @@ func Clone(ctx *middleware.Context) {
 		return
 	}
 
-	repo.Clone()
+	workspace := repo.Workspace()
+	build, _ := workspace.NewBuild("abc")
 
-	ctx.Flash.Info("Clone processing")
-	ctx.Redirect(fmt.Sprintf("/workspace/%d", id))
+	c := command.AutoBuildCommand(id, 1, "master", "test")
+	go command.RunCommand(c, build)
+
+	ctx.Flash.Info("Build processing")
+	ctx.Redirect(fmt.Sprintf("/workspace/%d", repo.Workspace().ID))
 }

@@ -46,6 +46,6 @@ func (s *Server) initRoute() {
 	}, reqSignIn)
 
 	s.m.Group("/repo", func() {
-		s.m.Get("/:id([0-9]+)/clone", repo.Clone)
+		s.m.Get("/:id([0-9]+)/build", repo.Build)
 	})
 }

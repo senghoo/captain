@@ -42,11 +42,17 @@ func (d *DockerBuildArchiveCommand) Run(build *models.Build) {
 		logger.Printf("Error: %s", err)
 		return
 	}
-	dockerServ.Build(docker.BuildImageOptions{
+	err = dockerServ.Build(docker.BuildImageOptions{
 		Name:         d.Name,
 		InputStream:  file,
 		OutputStream: d.buffer,
 	})
+	if err != nil {
+		logger.Printf("Error: %s", err)
+		return
+	}
+
+	logger.Printf("Output:\n>>>>>%s\n<<<<<", d.buffer.String())
 }
 
 func (d *DockerBuildArchiveCommand) Next() Command {
