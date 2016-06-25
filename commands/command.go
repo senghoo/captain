@@ -49,6 +49,7 @@ func RunNode(n *Node, build *models.Build) {
 	command, err := n.Command()
 	if err != nil {
 		logger.Printf("create command error %s", err)
+		return
 	}
 
 	status := command.Run(build)
