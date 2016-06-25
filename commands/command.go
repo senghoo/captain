@@ -31,7 +31,7 @@ func NewCommand(name string, args CommandArgs) (Command, error) {
 type Node struct {
 	CommandName string
 	CommandArgs CommandArgs
-	SubNode     map[string]Node
+	SubNode     map[string]*Node
 }
 
 func (n *Node) Command() (Command, error) {
