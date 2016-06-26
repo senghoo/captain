@@ -7,11 +7,10 @@ import (
 	"github.com/senghoo/captain/models"
 )
 
-type CommandArgs map[string]interface{}
-
 type Command interface {
 	Run(build *models.Build) string
-	Clone(args CommandArgs) (Command, error)
+	Clone() Command
+	SetArgs(args CommandArgs) error
 }
 
 var commandMap map[string]Command
@@ -25,7 +24,9 @@ func NewCommand(name string, args CommandArgs) (Command, error) {
 	if !ok {
 		return nil, fmt.Errorf("Command %s not found", name)
 	}
-	return c.Clone(args)
+	c = c.Clone()
+	err := c.SetArgs(args)
+	return c, err
 }
 
 type Node struct {
