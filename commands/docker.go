@@ -29,18 +29,27 @@ func NewDockerBuildArchiveCommand(name, file string, dockerID int64) *DockerBuil
 	}
 }
 
-func (d *DockerBuildArchiveCommand) Run(build *models.Build) {
+func (r *DockerBuildArchiveCommand) Clone() Command {
+	n := *r
+	return &n
+}
+
+func (r *DockerBuildArchiveCommand) SetArgs(args CommandArgs) error {
+	return UpdateArgs(r, args)
+}
+
+func (d *DockerBuildArchiveCommand) Run(build *models.Build) string {
 	logger := build.Logger()
 	dockerServ, err := models.GetDockerServerByID(d.DockerID)
 	if err != nil {
 		logger.Printf("Error: %s", err)
-		return
+		return "error"
 	}
 	// file
 	file, err := os.Open(path.Join(build.Path(), d.File))
 	if err != nil {
 		logger.Printf("Error: %s", err)
-		return
+		return "error"
 	}
 	err = dockerServ.Build(docker.BuildImageOptions{
 		Name:         d.Name,
@@ -49,10 +58,11 @@ func (d *DockerBuildArchiveCommand) Run(build *models.Build) {
 	})
 	if err != nil {
 		logger.Printf("Error: %s", err)
-		return
+		return "error"
 	}
 
 	logger.Printf("Output:\n>>>>>%s\n<<<<<", d.buffer.String())
+	return "success"
 }
 
 func (d *DockerBuildArchiveCommand) Next() Command {
