@@ -25,8 +25,8 @@ func Build(ctx *middleware.Context) {
 	workspace := repo.Workspace()
 	build, _ := workspace.NewBuild("abc")
 
-	c := command.AutoBuildCommand(id, 1, "master", "test")
-	go command.RunCommand(c, build)
+	node := command.AutoBuildTree(id, 1, "master", "test")
+	go command.RunNode(node, build)
 
 	ctx.Flash.Info("Build processing")
 	ctx.Redirect(fmt.Sprintf("/workspace/%d", repo.Workspace().ID))

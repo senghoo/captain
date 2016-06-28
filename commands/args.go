@@ -18,29 +18,29 @@ func (a CommandArgs) String(name string) (string, bool) {
 	return v, ok
 }
 
-func (a CommandArgs) Int(name string) (int, bool) {
+func (a CommandArgs) Float64(name string) (float64, bool) {
 	i, ok := a[name]
 	if !ok {
 		return 0, false
 	}
 
-	v, ok := i.(int)
+	v, ok := i.(float64)
 	return v, ok
+}
+
+func (a CommandArgs) Int(name string) (int, bool) {
+	i, ok := a.Float64(name)
+	return int(i), ok
 }
 
 func (a CommandArgs) Int64(name string) (int64, bool) {
-	i, ok := a[name]
-	if !ok {
-		return 0, false
-	}
-
-	v, ok := i.(int64)
-	return v, ok
+	i, ok := a.Float64(name)
+	return int64(i), ok
 }
 
 func UpdateArgs(obj interface{}, args CommandArgs) error {
-	t := reflect.TypeOf(obj)
-	v := reflect.ValueOf(obj)
+	t := reflect.TypeOf(obj).Elem()
+	v := reflect.ValueOf(obj).Elem()
 	fieldNum := t.NumField()
 	if fieldNum == 0 {
 		return errors.New("Not Contains any field")
@@ -79,5 +79,5 @@ func updateValue(value reflect.Value, name string, args CommandArgs) error {
 		return fmt.Errorf("unsupported type %s", t)
 
 	}
-
+	return nil
 }

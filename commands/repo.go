@@ -7,10 +7,14 @@ import (
 	"github.com/senghoo/captain/models"
 )
 
+func init() {
+	RegisterCommand("RepoUpdateCommand", new(RepoUpdateCommand))
+	RegisterCommand("RepoArchiveCommand", new(RepoArchiveCommand))
+}
+
 type RepoUpdateCommand struct {
 	RepoID int64
 	Status int
-	next   Command
 }
 
 const (
@@ -61,7 +65,6 @@ type RepoArchiveCommand struct {
 	Format  string
 	Branch  string
 	OutFile string
-	next    Command
 }
 
 func NewRepoArchiveCommand(repoID int64, format, branch, file string) *RepoArchiveCommand {
@@ -97,9 +100,9 @@ func (r *RepoArchiveCommand) SetArgs(args CommandArgs) error {
 	}
 	r.Branch = branch
 
-	file, ok := args.String("OugFile")
+	file, ok := args.String("OutFile")
 	if !ok {
-		return errors.New("File not set")
+		return errors.New("OutFile not set")
 	}
 	r.OutFile = file
 
@@ -126,4 +129,5 @@ func (r *RepoArchiveCommand) Run(build *models.Build) string {
 		logger.Printf("Error: %s", err)
 		return "error"
 	}
+	return "success"
 }

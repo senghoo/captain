@@ -9,12 +9,15 @@ import (
 	"github.com/senghoo/captain/models"
 )
 
+func init() {
+	RegisterCommand("DockerBuildArchiveCommand", new(DockerBuildArchiveCommand))
+}
+
 type DockerBuildArchiveCommand struct {
 	DockerID int64
 	File     string
 	Name     string
 	buffer   *bytes.Buffer
-	next     Command
 }
 
 const defaultBuffSize = 1024 * 1024
@@ -35,7 +38,8 @@ func (r *DockerBuildArchiveCommand) Clone() Command {
 }
 
 func (r *DockerBuildArchiveCommand) SetArgs(args CommandArgs) error {
-	return UpdateArgs(r, args)
+	err := UpdateArgs(r, args)
+	return err
 }
 
 func (d *DockerBuildArchiveCommand) Run(build *models.Build) string {
@@ -63,12 +67,4 @@ func (d *DockerBuildArchiveCommand) Run(build *models.Build) string {
 
 	logger.Printf("Output:\n>>>>>%s\n<<<<<", d.buffer.String())
 	return "success"
-}
-
-func (d *DockerBuildArchiveCommand) Next() Command {
-	return d.next
-}
-
-func (d *DockerBuildArchiveCommand) SetNext(c Command) {
-	d.next = c
 }

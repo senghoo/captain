@@ -13,7 +13,7 @@ type Command interface {
 	SetArgs(args CommandArgs) error
 }
 
-var commandMap map[string]Command
+var commandMap = make(map[string]Command)
 
 func RegisterCommand(name string, c Command) {
 	commandMap[name] = c
