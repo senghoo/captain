@@ -1,7 +1,6 @@
 package command
 
 import (
-	"errors"
 	"path"
 
 	"github.com/senghoo/captain/models"
@@ -26,15 +25,6 @@ const (
 func (r *RepoUpdateCommand) Clone() Command {
 	n := *r
 	return &n
-}
-
-func (r *RepoUpdateCommand) SetArgs(args CommandArgs) error {
-	repoID, ok := args.Int64("RepoID")
-	if !ok {
-		return errors.New("RepoID not set")
-	}
-	r.RepoID = repoID
-	return nil
 }
 
 func (r *RepoUpdateCommand) Run(build *models.Build) string {
@@ -79,34 +69,6 @@ func NewRepoArchiveCommand(repoID int64, format, branch, file string) *RepoArchi
 func (r *RepoArchiveCommand) Clone() Command {
 	n := *r
 	return &n
-}
-
-func (r *RepoArchiveCommand) SetArgs(args CommandArgs) error {
-	repoID, ok := args.Int64("RepoID")
-	if !ok {
-		return errors.New("RepoID not set")
-	}
-	r.RepoID = repoID
-
-	format, ok := args.String("Format")
-	if !ok {
-		return errors.New("Format not set")
-	}
-	r.Format = format
-
-	branch, ok := args.String("Branch")
-	if !ok {
-		return errors.New("Branch not set")
-	}
-	r.Branch = branch
-
-	file, ok := args.String("OutFile")
-	if !ok {
-		return errors.New("OutFile not set")
-	}
-	r.OutFile = file
-
-	return nil
 }
 
 func (r *RepoArchiveCommand) Run(build *models.Build) string {

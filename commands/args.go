@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+
+	"gopkg.in/flosch/pongo2.v3"
 )
 
 type CommandArgs map[string]interface{}
@@ -38,7 +40,7 @@ func (a CommandArgs) Int64(name string) (int64, bool) {
 	return int64(i), ok
 }
 
-func UpdateArgs(obj interface{}, args CommandArgs) error {
+func UpdateArgs(obj interface{}, args CommandArgs, context map[string]interface{}) error {
 	t := reflect.TypeOf(obj).Elem()
 	v := reflect.ValueOf(obj).Elem()
 	fieldNum := t.NumField()
@@ -53,14 +55,17 @@ func UpdateArgs(obj interface{}, args CommandArgs) error {
 			continue
 		default:
 			value := v.Field(i)
-			updateValue(value, field.Name, args)
+			err := updateValue(value, field.Name, args, context)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
 	return nil
 }
 
-func updateValue(value reflect.Value, name string, args CommandArgs) error {
+func updateValue(value reflect.Value, name string, args CommandArgs, context map[string]interface{}) error {
 	t := value.Type().Name()
 	switch t {
 	case "int", "int64":
@@ -74,7 +79,15 @@ func updateValue(value reflect.Value, name string, args CommandArgs) error {
 		if !ok {
 			return fmt.Errorf("%s not exist", name)
 		}
-		value.SetString(v)
+		tpl, err := pongo2.FromString(v)
+		if err != nil {
+			return err
+		}
+		out, err := tpl.Execute(context)
+		if err != nil {
+			return err
+		}
+		value.SetString(out)
 	default:
 		return fmt.Errorf("unsupported type %s", t)
 

@@ -10,7 +10,6 @@ import (
 type Command interface {
 	Run(build *models.Build) string
 	Clone() Command
-	SetArgs(args CommandArgs) error
 }
 
 var commandMap = make(map[string]Command)
@@ -19,13 +18,13 @@ func RegisterCommand(name string, c Command) {
 	commandMap[name] = c
 }
 
-func NewCommand(name string, args CommandArgs) (Command, error) {
+func NewCommand(name string, args CommandArgs, build *models.Build) (Command, error) {
 	c, ok := commandMap[name]
 	if !ok {
 		return nil, fmt.Errorf("Command %s not found", name)
 	}
 	c = c.Clone()
-	err := c.SetArgs(args)
+	err := UpdateArgs(c, args, build.Context)
 	return c, err
 }
 
@@ -35,8 +34,8 @@ type Node struct {
 	SubNode     map[string]*Node
 }
 
-func (n *Node) Command() (Command, error) {
-	return NewCommand(n.CommandName, n.CommandArgs)
+func (n *Node) Command(build *models.Build) (Command, error) {
+	return NewCommand(n.CommandName, n.CommandArgs, build)
 }
 
 func ParseNode(raw []byte) (n *Node, err error) {
@@ -47,7 +46,7 @@ func ParseNode(raw []byte) (n *Node, err error) {
 
 func RunNode(n *Node, build *models.Build) {
 	logger := build.Logger()
-	command, err := n.Command()
+	command, err := n.Command(build)
 	if err != nil {
 		logger.Printf("create command error %s", err)
 		return

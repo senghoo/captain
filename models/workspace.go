@@ -64,6 +64,7 @@ type Build struct {
 	Updated     time.Time   `xorm:"UPDATED"`
 	Deleted     time.Time   `xorm:"deleted"`
 	logger      *log.Logger `xorm:"-"`
+	Context     map[string]interface{}
 }
 
 func (w *Workspace) NewBuild(t string) (*Build, error) {

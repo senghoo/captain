@@ -37,11 +37,6 @@ func (r *DockerBuildArchiveCommand) Clone() Command {
 	return &n
 }
 
-func (r *DockerBuildArchiveCommand) SetArgs(args CommandArgs) error {
-	err := UpdateArgs(r, args)
-	return err
-}
-
 func (d *DockerBuildArchiveCommand) Run(build *models.Build) string {
 	logger := build.Logger()
 	dockerServ, err := models.GetDockerServerByID(d.DockerID)
