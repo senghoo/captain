@@ -13,7 +13,6 @@ func init() {
 
 type RepoUpdateCommand struct {
 	RepoID int64
-	Status int
 }
 
 const (
@@ -51,7 +50,6 @@ func (r *RepoUpdateCommand) Run(build *models.Build) string {
 
 type RepoArchiveCommand struct {
 	RepoID  int64
-	Status  int
 	Format  string
 	Branch  string
 	OutFile string

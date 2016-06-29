@@ -17,7 +17,7 @@ type DockerBuildArchiveCommand struct {
 	DockerID int64
 	File     string
 	Name     string
-	buffer   *bytes.Buffer
+	buffer   *bytes.Buffer `command:"-"`
 }
 
 const defaultBuffSize = 1024 * 1024

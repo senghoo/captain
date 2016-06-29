@@ -3,13 +3,13 @@ package command
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 
 	"github.com/senghoo/captain/models"
 )
 
 type Command interface {
 	Run(build *models.Build) string
-	Clone() Command
 }
 
 var commandMap = make(map[string]Command)
@@ -23,9 +23,17 @@ func NewCommand(name string, args CommandArgs, build *models.Build) (Command, er
 	if !ok {
 		return nil, fmt.Errorf("Command %s not found", name)
 	}
-	c = c.Clone()
-	err := UpdateArgs(c, args, build.Context)
-	return c, err
+	newCmd := copyCommand(c)
+	err := UpdateArgs(newCmd, args, build.Context)
+	return newCmd, err
+}
+
+func copyCommand(c Command) Command {
+	val := reflect.ValueOf(c)
+	if val.Kind() == reflect.Ptr {
+		val = reflect.Indirect(val)
+	}
+	return reflect.New(val.Type()).Interface().(Command)
 }
 
 type Node struct {
