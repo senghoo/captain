@@ -53,6 +53,12 @@ func (w *Workspace) AddRepository(repo *Repository) {
 	x.Insert(repo)
 }
 
+func (w *Workspace) Builds() ([]*Build, error) {
+	var builds []*Build
+	err := x.Find(&builds, &Build{WorkspaceID: w.ID})
+	return builds, err
+}
+
 type Build struct {
 	ID          int64
 	WorkspaceID int64
