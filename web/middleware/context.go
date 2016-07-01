@@ -44,6 +44,10 @@ func (c *Context) Logout() {
 	c.Session.Delete("uid")
 }
 
+func (c *Context) GetHeader(key string) string {
+	return c.Req.Header.Get(key)
+}
+
 // HasError returns true if error occurs in form validation.
 func (ctx *Context) HasError() bool {
 	hasErr, ok := ctx.Data["HasError"]

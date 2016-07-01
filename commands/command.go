@@ -69,3 +69,23 @@ func RunNode(n *Node, build *models.Build) {
 
 	RunNode(subnode, build)
 }
+
+func RunWorkflow(w *models.Workflow) error {
+	node, err := ParseNode([]byte(w.Config))
+	if err != nil {
+		return err
+	}
+
+	ws, err := w.Workspace()
+	if err != nil {
+		return err
+	}
+
+	build, err := ws.NewBuild(w.Name)
+	if err != nil {
+		return err
+	}
+
+	RunNode(node, build)
+	return nil
+}

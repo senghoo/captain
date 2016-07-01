@@ -21,7 +21,7 @@ var (
 
 func init() {
 	tables = append(tables, new(User), new(GithubAccount), new(DockerServer),
-		new(Workspace), new(Repository), new(Build), new(Workflow))
+		new(Workspace), new(Repository), new(Build), new(Workflow), new(GithubWebhook))
 	LoadSetting()
 }
 

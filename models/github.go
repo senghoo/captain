@@ -1,6 +1,9 @@
 package models
 
 import (
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -174,4 +177,37 @@ func (a *GithubAccount) GetRepoByFullName(fullname string) (*Repository, error) 
 
 	repo, _, err := a.Client().Repositories.Get(s[0], s[1])
 	return githubRepoToLocal(repo), err
+}
+
+type GithubWebhook struct {
+	ID         int64
+	Secret     string
+	WorkflowID int64
+}
+
+func (g *GithubWebhook) Workflow() (*Workflow, error) {
+	wf := new(Workflow)
+	has, err := GetByID(g.WorkflowID, wf)
+	if !has {
+		return nil, fmt.Errorf("workflow %d not exists", g.WorkflowID)
+	}
+	return wf, err
+}
+
+func (g *GithubWebhook) VerifySignature(signature string, body []byte) bool {
+	signBody := func() []byte {
+		computed := hmac.New(sha1.New, []byte(g.Secret))
+		computed.Write(body)
+		return []byte(computed.Sum(nil))
+	}
+	const signaturePrefix = "sha1="
+	const signatureLength = 45 // len(SignaturePrefix) + len(hex(sha1))
+	if len(signature) != signatureLength || !strings.HasPrefix(signature, signaturePrefix) {
+		return false
+	}
+
+	actual := make([]byte, 20)
+	hex.Decode(actual, []byte(signature[5:]))
+
+	return hmac.Equal(signBody(), actual)
 }

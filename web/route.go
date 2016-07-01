@@ -27,6 +27,7 @@ func (s *Server) initRoute() {
 		s.m.Get("/", github.Info)
 		s.m.Get("/auth", github.Auth)
 		s.m.Get("/callback", github.Callback)
+		s.m.Get("/webhook/:id([0-9]+)", github.Webhook)
 	}, reqSignIn)
 
 	s.m.Group("/docker", func() {
@@ -48,4 +49,5 @@ func (s *Server) initRoute() {
 	s.m.Group("/repo", func() {
 		s.m.Get("/:id([0-9]+)/build", repo.Build)
 	})
+
 }
