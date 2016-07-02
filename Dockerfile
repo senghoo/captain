@@ -7,4 +7,5 @@ ADD . /go/src/github.com/senghoo/captain
 RUN cd /go/src/github.com/senghoo/captain && godep go install
 RUN mkdir /workdir
 WORKDIR /workdir
-CMD ["/go/bin/captain", "web"]
+EXPOSE 80
+CMD ["/go/bin/captain", "web", "-l", "0.0.0.0:80"]
