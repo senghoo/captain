@@ -129,7 +129,7 @@ func (a *GithubAccount) Repos() (r []*Repository, err error) {
 	}
 
 	for _, repo := range repos {
-		r = append(r, githubRepoToLocal(&repo))
+		r = append(r, githubRepoToLocal(repo))
 	}
 	return
 }
