@@ -106,7 +106,7 @@ func Toggle(options *ToggleOptions) macaron.Handler {
 
 		// Redirect to dashboard if user tries to visit any non-login page.
 		if options.SignOutRequire && ctx.IsSigned && ctx.Req.RequestURI != "/" {
-			ctx.Redirect(settings.GetOrDefault("site.url", "") + "/")
+			ctx.Redirect(settings.SiteURL() + "/")
 			return
 		}
 
@@ -118,11 +118,11 @@ func Toggle(options *ToggleOptions) macaron.Handler {
 		}
 
 		if options.SignInRequire && !ctx.IsSigned {
-			ctx.Redirect(settings.GetOrDefault("site.url", "") + "/user/sign_in")
+			ctx.Redirect(settings.SiteURL() + "/user/sign_in")
 			return
 		}
 		if options.SignOutRequire && ctx.IsSigned {
-			ctx.Redirect(settings.GetOrDefault("site.url", "") + "/")
+			ctx.Redirect(settings.SiteURL() + "/")
 			return
 		}
 

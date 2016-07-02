@@ -22,8 +22,8 @@ var oauthConf *oauth2.Config
 
 func init() {
 	oauthConf = &oauth2.Config{
-		ClientID:     settings.GetOrDefault("github.client_id", ""),
-		ClientSecret: settings.GetOrDefault("github.client_secret", ""),
+		ClientID:     settings.GetOrDefault("GITHUB_CLIENT_ID", ""),
+		ClientSecret: settings.GetOrDefault("GITHUB_CLIENT_SECRET", ""),
 		Scopes:       []string{"user:email"},
 		Endpoint:     githuboauth.Endpoint,
 	}

@@ -46,7 +46,7 @@ func (s *Server) initMiddleWare() {
 		ProviderConfig: "tmp/sessions",
 	}))
 	s.m.Use(csrf.Csrfer(csrf.Options{
-		Secret:    settings.GetOrDefault("csrf.key", "development csrf keys"),
+		Secret:    settings.CsrfKey(),
 		SetCookie: true,
 		Header:    "X-Csrf-Token",
 	}))

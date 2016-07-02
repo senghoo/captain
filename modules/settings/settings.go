@@ -1,66 +1,20 @@
 package settings
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
-
-	"github.com/olebedev/config"
 )
 
-var cfg *config.Config
-var defaultSetting = `
-db:
-  name:
-  user:
-  password:
-  host:
-app:
-  static:
-github:
-  client_id:
-  client_secret:
-`
-
-func init() {
-	var err error
-	cfg, err = config.ParseYamlFile(configFile())
-	if err != nil {
-		fmt.Print("config parse error or not exists, use default")
-		cfg, _ = config.ParseYaml(defaultSetting)
-		Save()
-	}
+func Get(key string) string {
+	return os.Getenv(key)
 }
 
-func configFile() (config string) {
-	config = os.Getenv("CAPTAIN_CONFIG")
-	if config == "" {
-		config = "config.yml"
-	}
-	return
-}
-
-func Save() {
-	yml, _ := config.RenderYaml(cfg.Root)
-	d := []byte(yml)
-	ioutil.WriteFile(configFile(), d, 0644)
-}
-
-func Get(path string) (string, error) {
-	return cfg.String(path)
-}
-
-func GetOrDefault(path, d string) string {
-	v, err := cfg.String(path)
-	if err != nil || v == "" {
+func GetOrDefault(key, d string) string {
+	s := Get(key)
+	if s == "" {
 		return d
 	}
-	return v
-}
-
-func Set(path, val string) error {
-	return cfg.Set(path, val)
+	return s
 }
 
 func GetStaticPath() (path string) {
@@ -69,10 +23,6 @@ func GetStaticPath() (path string) {
 		return
 	}
 
-	path, _ = Get("app.static")
-	if path != "" {
-		return
-	}
 	path, _ = os.Getwd()
 	return
 }
@@ -83,12 +33,16 @@ func GetWorkspacePath() (p string) {
 		return
 	}
 
-	p, _ = Get("app.workspace")
-	if p != "" {
-		return
-	}
 	p, _ = os.Getwd()
 	p = path.Join(p, "workspace")
 
 	return
+}
+
+func SiteURL() string {
+	return GetOrDefault("SITE_URL", "")
+}
+
+func CsrfKey() string {
+	return GetOrDefault("CSRF_KEY", "set it to random string")
 }

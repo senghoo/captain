@@ -26,10 +26,10 @@ func init() {
 }
 
 func LoadSetting() {
-	DBCfg.Host = settings.GetOrDefault("db.host", "localhost:3306")
-	DBCfg.Name = settings.GetOrDefault("db.name", "captain")
-	DBCfg.User = settings.GetOrDefault("db.user", "root")
-	DBCfg.Passwd = settings.GetOrDefault("db.password", "")
+	DBCfg.Host = settings.GetOrDefault("DB_HOST", "localhost:3306")
+	DBCfg.Name = settings.GetOrDefault("DB_NAME", "captain")
+	DBCfg.User = settings.GetOrDefault("DB_USER", "root")
+	DBCfg.Passwd = settings.GetOrDefault("DB_PASSWORD", "")
 }
 
 func getEngine() (*xorm.Engine, error) {
@@ -54,7 +54,7 @@ func SetEngine() (err error) {
 
 	// WARNING: for serv command, MUST remove the output to os.stdout,
 	// so use log file to instead print to stdout.
-	logPath := path.Join(settings.GetOrDefault("log.path", "logs"), "xorm.log")
+	logPath := path.Join(settings.GetOrDefault("LOG_PATH", "logs"), "xorm.log")
 	os.MkdirAll(path.Dir(logPath), os.ModePerm)
 	f, err := os.Create(logPath)
 	if err != nil {
