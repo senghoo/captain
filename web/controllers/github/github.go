@@ -43,6 +43,9 @@ func Info(ctx *middleware.Context) {
 	if err != nil {
 		return
 	}
+	if a == nil {
+		ctx.Redirect("/github/auth")
+	}
 	ctx.Data["Account"] = a
 	ctx.Data["Repos"], _ = a.Repos()
 	ctx.HTML(200, "github/info")
