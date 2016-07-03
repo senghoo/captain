@@ -44,6 +44,8 @@ func (s *Server) initRoute() {
 		s.m.Get("/:id([0-9]+)", workspace.Info)
 		s.m.Get("/:id([0-9]+)/repository/new", workspace.AddRepository)
 		s.m.Post("/:id([0-9]+)/repository/new", binding.BindIgnErr(workspace.AddRepositoryForm{}), workspace.PostAddRepository)
+		s.m.Get("/:id([0-9]+)/workflow/new", workspace.AddWorkflow)
+		s.m.Post("/:id([0-9]+)/workflow/new", binding.BindIgnErr(workspace.AddWorkflowForm{}), workspace.PostAddWorkflow)
 	}, reqSignIn)
 
 	s.m.Group("/repo", func() {

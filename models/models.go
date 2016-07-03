@@ -80,3 +80,7 @@ func NewEngine() (err error) {
 func GetByID(id int64, obj interface{}) (has bool, err error) {
 	return x.Id(id).Get(obj)
 }
+
+func Insert(beans ...interface{}) (int64, error) {
+	return x.Insert(beans...)
+}
