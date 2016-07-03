@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/go-macaron/csrf"
@@ -95,4 +96,5 @@ func PostAddRepository(ctx *middleware.Context, form AddRepositoryForm) {
 	}
 
 	ws.AddRepository(repo)
+	ctx.Redirect(fmt.Sprintf("/workspace/%d", id), 302)
 }
