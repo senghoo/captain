@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/go-macaron/csrf"
@@ -55,9 +56,11 @@ func Info(ctx *middleware.Context) {
 }
 
 func AddRepository(ctx *middleware.Context, x csrf.CSRF) {
+	id := ctx.ParamsInt64(":id")
 	github, err := models.GetGithubAccount()
+
 	if err != nil {
-		ctx.HandleErr(err, "/workspace")
+		ctx.HandleErr(err, fmt.Sprintf("/workspace/%d", id))
 		return
 	}
 	if github != nil {
@@ -83,7 +86,7 @@ func PostAddRepository(ctx *middleware.Context, form AddRepositoryForm) {
 	}
 
 	ws := new(models.Workspace)
-	id, _ := strconv.ParseInt(ctx.Params(":id"), 10, 32)
+	id := ctx.ParamsInt64(":id")
 	has, err := models.GetByID(id, ws)
 	if !has {
 		ctx.NotFound("")
@@ -96,4 +99,22 @@ func PostAddRepository(ctx *middleware.Context, form AddRepositoryForm) {
 	}
 
 	ws.AddRepository(repo)
+	ctx.Redirect(fmt.Sprintf("/workspace/%d", id), 302)
+}
+
+func AddWorkflow(ctx *middleware.Context, x csrf.CSRF) {
+	ctx.Data["csrf_token"] = x.GetToken()
+	ctx.HTML(200, "workspace/new_workflow")
+}
+
+type AddWorkflowForm struct {
+	Name   string `binding:"Required;MaxSize(254)"`
+	Config string `binding:"Required;MaxSize(4096)"`
+}
+
+func PostAddWorkflow(ctx *middleware.Context, form AddWorkflowForm) {
+	wsID := ctx.ParamsInt64(":id")
+	wf := models.NewWorkflow(wsID, form.Name, form.Config)
+	models.Insert(wf)
+	ctx.Redirect(fmt.Sprintf("/workspace/%d", wsID), 302)
 }
