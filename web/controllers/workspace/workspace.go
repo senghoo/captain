@@ -108,13 +108,14 @@ func AddWorkflow(ctx *middleware.Context, x csrf.CSRF) {
 }
 
 type AddWorkflowForm struct {
-	Name   string `binding:"Required;MaxSize(254)"`
-	Config string `binding:"Required;MaxSize(4096)"`
+	Name       string `binding:"Required;MaxSize(254)"`
+	Config     string `binding:"Required;MaxSize(4096)"`
+	ConfigType string `binding:"Required;MaxSize(64)"`
 }
 
 func PostAddWorkflow(ctx *middleware.Context, form AddWorkflowForm) {
 	wsID := ctx.ParamsInt64(":id")
-	wf := models.NewWorkflow(wsID, form.Name, form.Config)
+	wf := models.NewWorkflow(wsID, form.Name, form.Config, form.ConfigType)
 	models.Insert(wf)
 	ctx.Redirect(fmt.Sprintf("/workspace/%d", wsID), 302)
 }
