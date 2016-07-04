@@ -50,6 +50,7 @@ func Info(ctx *middleware.Context) {
 	ctx.Data["Workspace"] = ws
 	ctx.Data["Repos"], _ = ws.Repositories()
 	ctx.Data["Builds"], _ = ws.Builds()
+	ctx.Data["Workflows"], _ = ws.Workflows()
 	ctx.HTML(200, "workspace/info")
 }
 

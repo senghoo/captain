@@ -92,4 +92,46 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+
+                <h3 class="panel-title pull-left">
+                    Workflows
+                </h3>
+                <a href="/workspace/{{Workspace.ID}}/workflow/new" class="btn btn-default pull-right">
+                    New
+                </a>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Created</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for workflow in Workflows %}
+                            <tr>
+                                <td>{{workflow.ID}}</td>
+                                <td>{{workflow.Name}}</td>
+                                <td>{{workflow.Created}}</td>
+                                <td></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
