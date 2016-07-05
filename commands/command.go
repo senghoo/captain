@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"reflect"
 
+	"gopkg.in/yaml.v2"
+
 	"github.com/senghoo/captain/models"
 )
 
@@ -46,9 +48,27 @@ func (n *Node) Command(build *models.Build) (Command, error) {
 	return NewCommand(n.CommandName, n.CommandArgs, build)
 }
 
-func ParseNode(raw []byte) (n *Node, err error) {
+func ParseNode(raw []byte, kind string) (n *Node, err error) {
+	switch kind {
+	case "json":
+		return JSONParseNode(raw)
+	case "yaml", "yml":
+		return YMLParseNode(raw)
+	default:
+		return nil, fmt.Errorf("kind '%s' not defined", kind)
+	}
+}
+
+func JSONParseNode(raw []byte) (n *Node, err error) {
 	n = new(Node)
 	err = json.Unmarshal(raw, n)
+	return
+}
+
+// YMLParseNode ...
+func YMLParseNode(raw []byte) (n *Node, err error) {
+	n = new(Node)
+	err = yaml.Unmarshal(raw, n)
 	return
 }
 
@@ -71,7 +91,7 @@ func RunNode(n *Node, build *models.Build) {
 }
 
 func RunWorkflow(w *models.Workflow) error {
-	node, err := ParseNode([]byte(w.Config))
+	node, err := ParseNode([]byte(w.Config), w.ConfigType)
 	if err != nil {
 		return err
 	}

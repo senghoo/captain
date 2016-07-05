@@ -59,6 +59,12 @@ func (w *Workspace) Builds() ([]*Build, error) {
 	return builds, err
 }
 
+func (w *Workspace) Workflows() ([]*Workflow, error) {
+	var workflows []*Workflow
+	err := x.Find(&workflows, &Workflow{WorkspaceID: w.ID})
+	return workflows, err
+}
+
 type Build struct {
 	ID          int64
 	WorkspaceID int64
