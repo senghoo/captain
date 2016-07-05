@@ -7,3 +7,9 @@
 ## Run
 
 `captain web`
+
+## useful commands 
+
+Add user 
+
+`captain useradd user1 pass1 [-admin]`
