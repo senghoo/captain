@@ -13,3 +13,6 @@
 Add user 
 
 `captain useradd user1 pass1 [-admin]`
+
+else 
+`captainn -h`
