@@ -2,9 +2,6 @@
 	"ImportPath": "github.com/senghoo/captain",
 	"GoVersion": "go1.6",
 	"GodepVersion": "v74",
-	"Packages": [
-		"./..."
-	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/Sirupsen/logrus",
@@ -178,6 +175,10 @@
 			"ImportPath": "gopkg.in/macaron.v1",
 			"Comment": "v1",
 			"Rev": "26c1cde6f1acba6ec0a54547d68ef575559348f1"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "a83829b6f1293c91addabc89d0571c246397bbf4"
 		}
 	]
 }
