@@ -3,6 +3,8 @@ package models
 import (
 	"fmt"
 	"time"
+
+	"github.com/senghoo/captain/modules/utils"
 )
 
 type Workflow struct {
@@ -32,4 +34,13 @@ func (w *Workflow) Workspace() (*Workspace, error) {
 		return nil, fmt.Errorf("workspace %d not found", w.WorkspaceID)
 	}
 	return ws, err
+}
+
+func (w *Workflow) AddGithubWebhook() *GithubWebhook {
+	gw := &GithubWebhook{
+		Secret:     utils.RandomString(64),
+		WorkflowID: w.ID,
+	}
+	Insert(gw)
+	return gw
 }
