@@ -44,3 +44,8 @@ func (w *Workflow) AddGithubWebhook() *GithubWebhook {
 	Insert(gw)
 	return gw
 }
+
+func (w *Workflow) GithubWebhooks() (hooks []*GithubWebhook, err error) {
+	err = x.Find(&hooks, &GithubWebhook{WorkflowID: w.ID})
+	return
+}
