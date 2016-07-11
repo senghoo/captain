@@ -13,6 +13,7 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/google/go-github/github"
+	"github.com/senghoo/captain/models"
 	"github.com/senghoo/captain/modules/settings"
 	"github.com/senghoo/captain/modules/utils"
 	githuboauth "golang.org/x/oauth2/github"
@@ -214,4 +215,26 @@ func (g *GithubWebhook) VerifySignature(signature string, body []byte) bool {
 
 func (g *GithubWebhook) URL() string {
 	return fmt.Sprintf("%s/github/webhook/%d", settings.SiteURL(), g.ID)
+}
+
+func (g *GithubWebhook) CreateTo(owner, repo string) {
+	wf, _ := g.Workflow()
+	config := map[string]interface{}{
+		"url":          g.URL(),
+		"content_type": "json",
+	}
+	name := fmt.Sprintf("%s#%d", wf.Name, g.ID)
+	t := true
+	hook := &github.Hook{
+		Name:   &name,
+		Active: &t,
+		Events: []string{"push"},
+		Config: config,
+	}
+	a, err := models.GetGithubAccount()
+	if err != nil {
+		return
+	}
+
+	a.Client().Repositories.CreateHook(owner, repo, &hook)
 }
