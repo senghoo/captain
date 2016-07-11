@@ -211,3 +211,7 @@ func (g *GithubWebhook) VerifySignature(signature string, body []byte) bool {
 
 	return hmac.Equal(signBody(), actual)
 }
+
+func (g *GithubWebhook) URL() string {
+	return fmt.Sprintf("%s/github/webhook/%d", settings.SiteURL(), g.ID)
+}
