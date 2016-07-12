@@ -13,7 +13,6 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/google/go-github/github"
-	"github.com/senghoo/captain/models"
 	"github.com/senghoo/captain/modules/settings"
 	"github.com/senghoo/captain/modules/utils"
 	githuboauth "golang.org/x/oauth2/github"
@@ -231,10 +230,10 @@ func (g *GithubWebhook) CreateTo(owner, repo string) {
 		Events: []string{"push"},
 		Config: config,
 	}
-	a, err := models.GetGithubAccount()
+	a, err := GetGithubAccount()
 	if err != nil {
 		return
 	}
 
-	a.Client().Repositories.CreateHook(owner, repo, &hook)
+	a.Client().Repositories.CreateHook(owner, repo, hook)
 }

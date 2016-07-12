@@ -36,16 +36,20 @@ func (w *Workflow) Workspace() (*Workspace, error) {
 	return ws, err
 }
 
-func (w *Workflow) AddGithubWebhook() *GithubWebhook {
-	gw := &GithubWebhook{
-		Secret:     utils.RandomString(64),
+func (w *Workflow) GithubWebhook() (hook *GithubWebhook, err error) {
+	hook = &GithubWebhook{
 		WorkflowID: w.ID,
 	}
-	Insert(gw)
-	return gw
-}
+	has, err := x.Get(hook)
+	if err != nil {
+		return nil, err
+	}
 
-func (w *Workflow) GithubWebhooks() (hooks []*GithubWebhook, err error) {
-	err = x.Find(&hooks, &GithubWebhook{WorkflowID: w.ID})
-	return
+	if has {
+		return hook, nil
+	}
+
+	hook.Secret = utils.RandomString(64)
+	_, err = Insert(hook)
+	return hook, err
 }
