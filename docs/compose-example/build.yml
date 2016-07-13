@@ -1,0 +1,18 @@
+CommandName: RepoUpdateCommand
+CommandArgs:
+  RepoID: 1
+SubNode:
+  success:
+    CommandName: RepoArchiveCommand
+    CommandArgs:
+      RepoID: 1
+      Format: tar
+      Branch: master
+      OutFile: a.tar
+    SubNode:
+      success:
+        CommandName: DockerBuildArchiveCommand
+        CommandArgs:
+          DockerID: 1
+          File: a.tar
+          Name: captain

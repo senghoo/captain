@@ -11,7 +11,7 @@ type Workflow struct {
 	ID          int64
 	WorkspaceID int64
 	Name        string `xorm:"not null unique"`
-	Config      string
+	Config      string `xorm:"VARCHAR(4096)"`
 	ConfigType  string
 	Created     time.Time `xorm:"CREATED"`
 	Updated     time.Time `xorm:"UPDATED"`

@@ -116,6 +116,10 @@ type AddWorkflowForm struct {
 func PostAddWorkflow(ctx *middleware.Context, form AddWorkflowForm) {
 	wsID := ctx.ParamsInt64(":id")
 	wf := models.NewWorkflow(wsID, form.Name, form.Config, form.ConfigType)
-	models.Insert(wf)
+	_, err := models.Insert(wf)
+	if err != nil {
+		ctx.HandleErr(err, "")
+		return
+	}
 	ctx.Redirect(fmt.Sprintf("/workspace/%d", wsID), 302)
 }
