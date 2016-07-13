@@ -53,3 +53,13 @@ func (w *Workflow) GithubWebhook() (hook *GithubWebhook, err error) {
 	_, err = Insert(hook)
 	return hook, err
 }
+
+func (w *Workflow) GithubWebhookURL() string {
+	h, _ := w.GithubWebhook()
+	return h.URL()
+}
+
+func (w *Workflow) GithubWebhookSecret() string {
+	h, _ := w.GithubWebhook()
+	return h.Secret
+}

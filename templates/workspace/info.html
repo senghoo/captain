@@ -116,7 +116,8 @@
                                 <th>Name</th>
                                 <th>Type</th>
                                 <th>Created</th>
-                                <th></th>
+                                <th>Webhook URl</th>
+                                <th>Webhook Secret</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -126,6 +127,8 @@
                                 <td>{{workflow.Name}}</td>
                                 <td>{{workflow.ConfigType}}</td>
                                 <td>{{workflow.Created}}</td>
+                                <td>{{workflow.GithubWebhookURL()}}</td>
+                                <td>{{workflow.GithubWebhookSecret()}}</td>
                                 <td></td>
                             </tr>
                             {% endfor %}
