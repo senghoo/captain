@@ -30,14 +30,17 @@ func (a CommandArgs) Float64(name string) (float64, bool) {
 	return v, ok
 }
 
-func (a CommandArgs) Int(name string) (int, bool) {
-	i, ok := a.Float64(name)
-	return int(i), ok
-}
-
 func (a CommandArgs) Int64(name string) (int64, bool) {
-	i, ok := a.Float64(name)
-	return int64(i), ok
+	switch i := a[name].(type) {
+	case int:
+		return int64(i), true
+	case int64:
+		return i, true
+	case float64:
+		return int64(i), true
+	}
+
+	return 0, false
 }
 
 func UpdateArgs(obj interface{}, args CommandArgs, context map[string]interface{}) error {
@@ -67,6 +70,7 @@ func UpdateArgs(obj interface{}, args CommandArgs, context map[string]interface{
 
 func updateValue(value reflect.Value, name string, args CommandArgs, context map[string]interface{}) error {
 	t := value.Type().Name()
+	fmt.Printf("get %s, from %#v, t %s", name, args, t)
 	switch t {
 	case "int", "int64":
 		v, ok := args.Int64(name)

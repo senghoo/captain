@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/go-macaron/csrf"
+	"github.com/senghoo/captain/commands"
 	"github.com/senghoo/captain/models"
 	"github.com/senghoo/captain/web/middleware"
 )
@@ -122,4 +123,29 @@ func PostAddWorkflow(ctx *middleware.Context, form AddWorkflowForm) {
 		return
 	}
 	ctx.Redirect(fmt.Sprintf("/workspace/%d", wsID), 302)
+}
+
+func RunWorkflow(ctx *middleware.Context) {
+	id := ctx.ParamsInt64(":id")
+	wf := new(models.Workflow)
+	has, err := models.GetByID(id, wf)
+	if !has {
+		ctx.NotFound("")
+		return
+	}
+	if err != nil {
+		ctx.HandleErr(err, "")
+		return
+	}
+	err = command.RunWorkflow(wf)
+	if err != nil {
+		ctx.HandleErr(err, "")
+		return
+	}
+	ws, err := wf.Workspace()
+	if err != nil {
+		ctx.HandleErr(err, "")
+		return
+	}
+	ctx.Redirect(fmt.Sprintf("/workspace/%d", ws.ID), 302)
 }

@@ -39,9 +39,6 @@
                                 <td>{{repo.FullName}}</td>
                                 <td>{{repo.PushedAt}}</td>
                                 <td>{{repo.StatusString()}}</td>
-                                <td>
-                                    <a href="/repo/{{repo.ID}}/build"> Build </a>
-                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -118,6 +115,7 @@
                                 <th>Created</th>
                                 <th>Webhook URl</th>
                                 <th>Webhook Secret</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -129,7 +127,7 @@
                                 <td>{{workflow.Created}}</td>
                                 <td>{{workflow.GithubWebhookURL()}}</td>
                                 <td>{{workflow.GithubWebhookSecret()}}</td>
-                                <td></td>
+                                <td><a href="/workflow/{{workflow.ID}}/run">RUN</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>
