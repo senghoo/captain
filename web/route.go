@@ -27,8 +27,8 @@ func (s *Server) initRoute() {
 		s.m.Get("/", github.Info)
 		s.m.Get("/auth", github.Auth)
 		s.m.Get("/callback", github.Callback)
-		s.m.Get("/webhook/:id([0-9]+)", github.Webhook)
 	}, reqSignIn)
+	s.m.Get("/github/webhook/:id([0-9]+)", github.Webhook)
 
 	s.m.Group("/docker", func() {
 		s.m.Get("/", docker.Index)
