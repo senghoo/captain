@@ -17,18 +17,15 @@ type DockerBuildArchiveCommand struct {
 	DockerID int64
 	File     string
 	Name     string
-	buffer   *bytes.Buffer `command:"-"`
 }
 
 const defaultBuffSize = 1024 * 1024
 
 func NewDockerBuildArchiveCommand(name, file string, dockerID int64) *DockerBuildArchiveCommand {
-	buf := make([]byte, 0, defaultBuffSize)
 	return &DockerBuildArchiveCommand{
 		DockerID: dockerID,
 		Name:     name,
 		File:     file,
-		buffer:   bytes.NewBuffer(buf),
 	}
 }
 
@@ -39,6 +36,7 @@ func (r *DockerBuildArchiveCommand) Clone() Command {
 
 func (d *DockerBuildArchiveCommand) Run(build *models.Build) string {
 	logger := build.Logger()
+	buffer := bytes.NewBuffer(nil)
 	dockerServ, err := models.GetDockerServerByID(d.DockerID)
 	if err != nil {
 		logger.Printf("Error: %s", err)
@@ -53,13 +51,13 @@ func (d *DockerBuildArchiveCommand) Run(build *models.Build) string {
 	err = dockerServ.Build(docker.BuildImageOptions{
 		Name:         d.Name,
 		InputStream:  file,
-		OutputStream: d.buffer,
+		OutputStream: buffer,
 	})
 	if err != nil {
 		logger.Printf("Error: %s", err)
 		return "error"
 	}
 
-	logger.Printf("Output:\n>>>>>%s\n<<<<<", d.buffer.String())
+	logger.Printf("Output:\n>>>>>%s\n<<<<<", buffer.String())
 	return "success"
 }
