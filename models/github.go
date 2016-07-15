@@ -24,7 +24,7 @@ func init() {
 	oauthConf = &oauth2.Config{
 		ClientID:     settings.GetOrDefault("GITHUB_CLIENT_ID", ""),
 		ClientSecret: settings.GetOrDefault("GITHUB_CLIENT_SECRET", ""),
-		Scopes:       []string{"user:email"},
+		Scopes:       []string{"user:email", "repo", "write:repo_hook"},
 		Endpoint:     githuboauth.Endpoint,
 	}
 }
