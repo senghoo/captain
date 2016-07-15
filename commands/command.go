@@ -77,7 +77,7 @@ func RunNode(n *Node, build *models.Build) {
 	logger := build.Logger()
 	command, err := n.Command(build)
 	if err != nil {
-		b.Error(err)
+		build.Error(err)
 		logger.Printf("create command error %s", err)
 		return
 	}
