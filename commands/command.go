@@ -93,6 +93,11 @@ func RunNode(n *Node, build *models.Build) {
 }
 
 func RunWorkflow(w *models.Workflow) error {
+	defer func() {
+		if e := recover(); e != nil {
+			fmt.Printf("Run Workflow panic %s", e)
+		}
+	}()
 	ws, err := w.Workspace()
 	if err != nil {
 		return err
