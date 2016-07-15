@@ -137,11 +137,8 @@ func RunWorkflow(ctx *middleware.Context) {
 		ctx.HandleErr(err, "")
 		return
 	}
-	err = command.RunWorkflow(wf)
-	if err != nil {
-		ctx.HandleErr(err, "")
-		return
-	}
+	go command.RunWorkflow(wf)
+
 	ws, err := wf.Workspace()
 	if err != nil {
 		ctx.HandleErr(err, "")
