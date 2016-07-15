@@ -71,6 +71,7 @@ type Build struct {
 	workspace   *Workspace `xorm:"-"`
 	BuildNo     int64
 	Type        string
+	Status      string
 	Name        string      `xorm:"not null unique"`
 	Created     time.Time   `xorm:"CREATED"`
 	Updated     time.Time   `xorm:"UPDATED"`
@@ -87,6 +88,7 @@ func (w *Workspace) NewBuild(t string) (*Build, error) {
 		WorkspaceID: w.ID,
 		BuildNo:     buildNo,
 		Type:        t,
+		Status:      "Pendding",
 		Name:        fmt.Sprintf("%s:%s:%d", w.Name, t, buildNo),
 	}
 	_, err := x.Insert(build)
@@ -110,6 +112,16 @@ func (b *Build) Logger() *log.Logger {
 
 func (b *Build) LogFile() string {
 	return path.Join(b.Path(), "log.log")
+}
+
+func (b *Build) UpdateStatus(status string) {
+	b.Status = status
+	x.Id(b.ID).Update(b)
+}
+
+func (b *Build) Error(err error) {
+	b.Status = fmt.Sprintf("Err: %s", err)
+	x.Id(b.ID).Update(b)
 }
 
 func (b *Build) Workspace() *Workspace {

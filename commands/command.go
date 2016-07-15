@@ -73,9 +73,11 @@ func YMLParseNode(raw []byte) (n *Node, err error) {
 }
 
 func RunNode(n *Node, build *models.Build) {
+	build.UpdateStatus(fmt.Sprintf("Running %s", n.CommandName))
 	logger := build.Logger()
 	command, err := n.Command(build)
 	if err != nil {
+		b.Error(err)
 		logger.Printf("create command error %s", err)
 		return
 	}
@@ -91,11 +93,6 @@ func RunNode(n *Node, build *models.Build) {
 }
 
 func RunWorkflow(w *models.Workflow) error {
-	node, err := ParseNode([]byte(w.Config), w.ConfigType)
-	if err != nil {
-		return err
-	}
-
 	ws, err := w.Workspace()
 	if err != nil {
 		return err
@@ -105,7 +102,14 @@ func RunWorkflow(w *models.Workflow) error {
 	if err != nil {
 		return err
 	}
+	build.UpdateStatus("ParseNode")
+	node, err := ParseNode([]byte(w.Config), w.ConfigType)
+	if err != nil {
+		build.Error(err)
+		return err
+	}
 
 	RunNode(node, build)
+	build.UpdateStatus("Finish")
 	return nil
 }
