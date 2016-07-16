@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -112,6 +113,14 @@ func (b *Build) Logger() *log.Logger {
 
 func (b *Build) LogFile() string {
 	return path.Join(b.Path(), "log.log")
+}
+
+func (b *Build) Log() string {
+	buf, err := ioutil.ReadFile(b.LogFile())
+	if err != nil {
+		return ""
+	}
+	return string(buf)
 }
 
 func (b *Build) UpdateStatus(status string) {
