@@ -116,10 +116,7 @@ func (b *Build) LogFile() string {
 }
 
 func (b *Build) Log() string {
-	buf, err := ioutil.ReadFile(b.LogFile())
-	if err != nil {
-		return ""
-	}
+	buf, _ := ioutil.ReadFile(b.LogFile())
 	return string(buf)
 }
 
