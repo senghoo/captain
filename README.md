@@ -8,7 +8,7 @@
 
 `captain web`
 
-## useful commands 
+## Useful commands 
 
 Add user 
 
@@ -16,3 +16,15 @@ Add user
 
 else 
 `captain -h`
+
+## Environment
+
+* DB_HOST
+* DB_NAME
+* DB_USER
+* DB_PASSWORD
+* GITHUB_CLIENT_ID
+* GITHUB_CLIENT_SECRET
+* CSRF_KEY
+* CAPTAIN_WORKSPACE
+* SITE_URL
