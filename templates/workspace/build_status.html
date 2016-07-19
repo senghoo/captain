@@ -1,0 +1,47 @@
+{% extends "../layout.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-12">
+    <h1 class="page-header">build  {{Build.Name}}</h1>
+  </div>
+  <!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Log
+        </h3>
+      </div>
+      <div class="panel-body">
+        <pre><code class="bash">
+{{Build.Log()}}
+        </code></pre>
+      </div>
+    </div>
+  </div>
+  <!-- /.col-lg-12 -->
+</div>
+
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="/css/solarized-dark.css">
+{% endblock %}
+{% block js %}
+
+
+<script src="/js/highlight.pack.js"></script>
+
+
+<script>
+  $(document).ready(function() {
+  $('pre code').each(function(i, block) {
+  hljs.highlightBlock(block);
+  });
+  });
+</script>
+{% endblock %}
