@@ -115,6 +115,6 @@ func RunWorkflow(w *models.Workflow) error {
 	}
 
 	RunNode(node, build)
-	build.UpdateStatus("Finish")
+	build.Finish()
 	return nil
 }

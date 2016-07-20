@@ -127,8 +127,20 @@
                                 <td>{{build.Type}}</td>
                                 <td>{{build.Name}}</td>
                                 <td>{{build.Created}}</td>
-                                <td>{{build.Status}}</td>
-                                <td><a href="/build/{{build.ID}}">Status</a></td>
+                                <td>
+                                    {% if build.Status == "Processing" %}
+                                    <span class="label label-info">
+                                    {% elif build.Status == "Finish" %}
+                                    <span class="label label-success">
+                                    {% elif build.Status == "Error" %}
+                                    <span class="label label-danger">
+                                    {% endif %}
+                                        {{build.Status}}
+                                    </span>
+                                    {{build.Message}}
+                                </td>
+                                <td></td>
+                                <td><a href="/build/{{build.ID}}">More Info</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>

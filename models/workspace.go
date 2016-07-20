@@ -73,6 +73,7 @@ type Build struct {
 	BuildNo     int64
 	Type        string
 	Status      string
+	Message     string
 	Name        string      `xorm:"not null unique"`
 	Created     time.Time   `xorm:"CREATED"`
 	Updated     time.Time   `xorm:"UPDATED"`
@@ -121,12 +122,20 @@ func (b *Build) Log() string {
 }
 
 func (b *Build) UpdateStatus(status string) {
-	b.Status = status
+	b.Status = "Processing"
+	b.Message = status
+	x.Id(b.ID).Update(b)
+}
+
+func (b *Build) Finish() {
+	b.Status = "Finish"
+	b.Message = ""
 	x.Id(b.ID).Update(b)
 }
 
 func (b *Build) Error(err error) {
-	b.Status = fmt.Sprintf("Err: %s", err)
+	b.Status = "Error"
+	b.Message = err.Error()
 	x.Id(b.ID).Update(b)
 }
 
