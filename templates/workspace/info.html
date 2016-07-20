@@ -128,11 +128,11 @@
                                 <td>{{build.Name}}</td>
                                 <td>{{build.Created}}</td>
                                 <td>
-                                    {% if build.Status == "Processing" %}
+                                    {% if build.Status == "processing" %}
                                     <span class="label label-info">
-                                    {% elif build.Status == "Finish" %}
+                                    {% elif build.Status == "finish" %}
                                     <span class="label label-success">
-                                    {% elif build.Status == "Error" %}
+                                    {% elif build.Status == "error" %}
                                     <span class="label label-danger">
                                     {% endif %}
                                         {{build.Status}}

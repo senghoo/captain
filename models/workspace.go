@@ -122,19 +122,18 @@ func (b *Build) Log() string {
 }
 
 func (b *Build) UpdateStatus(status string) {
-	b.Status = "Processing"
+	b.Status = "processing"
 	b.Message = status
 	x.Id(b.ID).Update(b)
 }
 
 func (b *Build) Finish() {
-	b.Status = "Finish"
-	b.Message = ""
+	b.Status = "finish"
 	x.Id(b.ID).Update(b)
 }
 
 func (b *Build) Error(err error) {
-	b.Status = "Error"
+	b.Status = "error"
 	b.Message = err.Error()
 	x.Id(b.ID).Update(b)
 }

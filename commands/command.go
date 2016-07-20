@@ -84,6 +84,8 @@ func RunNode(n *Node, build *models.Build) {
 
 	status := command.Run(build)
 
+	build.UpdateStatus(fmt.Sprintf("%s at %s", status, n.CommandName))
+
 	subnode, ok := n.SubNode[status]
 	if !ok {
 		return
