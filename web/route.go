@@ -50,4 +50,7 @@ func (s *Server) initRoute() {
 	s.m.Group("/workflow", func() {
 		s.m.Get("/:id([0-9]+)/run", workspace.RunWorkflow)
 	}, reqSignIn)
+	s.m.Group("/build", func() {
+		s.m.Get("/:id([0-9]+)", workspace.BuildStatus)
+	}, reqSignIn)
 }

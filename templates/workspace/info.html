@@ -55,48 +55,6 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">
-                    Builds
-                </h3>
-            </div>
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Type</th>
-                                <th>Name</th>
-                                <th>Created</th>
-                                <th>Status</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for build in Builds %}
-                            <tr>
-                                <td>{{build.BuildNo}}</td>
-                                <td>{{build.Type}}</td>
-                                <td>{{build.Name}}</td>
-                                <td>{{build.Created}}</td>
-                                <td>{{build.Status}}</td>
-                                <td>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-12">
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
 
                 <h3 class="panel-title pull-left">
                     Workflows
@@ -139,4 +97,58 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Builds
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th>Created</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for build in Builds %}
+                            <tr>
+                                <td>{{build.BuildNo}}</td>
+                                <td>{{build.Type}}</td>
+                                <td>{{build.Name}}</td>
+                                <td>{{build.Created}}</td>
+                                <td>
+                                    {% if build.Status == "processing" %}
+                                    <span class="label label-info">
+                                    {% elif build.Status == "finish" %}
+                                    <span class="label label-success">
+                                    {% elif build.Status == "error" %}
+                                    <span class="label label-danger">
+                                    {% endif %}
+                                        {{build.Status}}
+                                    </span>
+                                    {{build.Message}}
+                                </td>
+                                <td></td>
+                                <td><a href="/build/{{build.ID}}">More Info</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
