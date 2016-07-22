@@ -29,11 +29,6 @@ func NewDockerBuildArchiveCommand(name, file string, dockerID int64) *DockerBuil
 	}
 }
 
-func (r *DockerBuildArchiveCommand) Clone() Command {
-	n := *r
-	return &n
-}
-
 func (d *DockerBuildArchiveCommand) Run(build *models.Build) string {
 	logger := build.Logger()
 	buffer := bytes.NewBuffer(nil)
